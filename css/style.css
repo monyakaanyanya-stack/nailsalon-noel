@@ -1214,18 +1214,41 @@ body {
   }
 
   .about-content {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
   }
 
   .about-image {
-    max-width: 350px;
-    margin: 0 auto;
+    max-width: none;
+    margin: 0;
+  }
+
+  .about-text h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .about-text p {
+    font-size: 0.78rem;
+    line-height: 1.9;
+    margin-bottom: 1rem;
   }
 
   .about-features {
-    flex-direction: column;
-    gap: 1.5rem;
+    flex-direction: row;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+  }
+
+  .about-feature-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .about-feature-title {
+    font-size: 0.62rem;
   }
 
   .staff-grid {
@@ -1288,6 +1311,35 @@ body {
 
   .section-title {
     font-size: 1.8rem;
+  }
+
+  .about-content {
+    gap: 1rem;
+  }
+
+  .about-text h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .about-text p {
+    font-size: 0.72rem;
+    line-height: 1.8;
+    margin-bottom: 0.8rem;
+  }
+
+  .about-features {
+    gap: 0.4rem;
+  }
+
+  .about-feature-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+
+  .about-feature-title {
+    font-size: 0.58rem;
   }
 }
 
