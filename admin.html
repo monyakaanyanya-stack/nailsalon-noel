@@ -343,6 +343,52 @@
       font-size: 0.7rem;
       color: #888;
     }
+
+    /* Staff designs grid in admin */
+    .staff-designs-admin {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .staff-design-item {
+      width: 74px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .staff-design-preview {
+      width: 74px;
+      height: 74px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #e0e0e0;
+      display: block;
+    }
+    .staff-design-placeholder {
+      width: 74px;
+      height: 74px;
+      border-radius: 6px;
+      border: 1px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: #bbb;
+      background: #f9fafb;
+    }
+    .staff-design-item .btn-upload {
+      width: 100%;
+      padding: 0.25rem;
+      font-size: 0.65rem;
+      text-align: center;
+    }
+    .staff-design-item .btn-remove {
+      width: 100%;
+      text-align: center;
+      font-size: 0.65rem;
+      padding: 0.15rem;
+    }
   </style>
 </head>
 <body>
@@ -752,7 +798,9 @@
     // --- Staff ---
     function renderStaffList() {
       const container = document.getElementById('staffList');
-      container.innerHTML = currentContent.staff.members.map((m, i) => `
+      container.innerHTML = currentContent.staff.members.map((m, i) => {
+        const designs = m.designs || [];
+        return `
         <div class="item-card">
           <div class="item-card-header">
             <span class="item-card-title">スタッフ ${i + 1}</span>
@@ -771,7 +819,7 @@
             <textarea data-staff-desc="${i}">${esc(m.desc)}</textarea>
           </div>
           <div class="field">
-            <label class="field-label">写真</label>
+            <label class="field-label">プロフィール写真</label>
             <div class="img-upload-row">
               <button class="btn-upload" onclick="pickImage('staff-photo-${i}')">写真を選ぶ</button>
               <span class="upload-status" id="status-staff-photo-${i}"></span>
@@ -779,25 +827,64 @@
             <input type="hidden" data-staff-photo="${i}" value="${esc(m.photoUrl)}">
             ${m.photoUrl ? `<img src="${esc(m.photoUrl)}" class="img-preview" id="preview-staff-photo-${i}">` : `<img class="img-preview" id="preview-staff-photo-${i}" style="display:none">`}
           </div>
+          <div class="field">
+            <label class="field-label">作品写真（クリックで拡大表示されます）</label>
+            <div class="staff-designs-admin" id="staff-designs-${i}">
+              ${designs.map((d, j) => `
+                <div class="staff-design-item">
+                  ${d.url
+                    ? `<img src="${esc(d.url)}" class="staff-design-preview" id="preview-staff-design-${i}-${j}">`
+                    : `<div class="staff-design-placeholder" id="preview-staff-design-${i}-${j}">未選択</div>`}
+                  <button class="btn-upload" onclick="pickImage('staff-design-${i}-${j}')">変更</button>
+                  <button class="btn-remove" onclick="removeStaffDesign(${i},${j})">削除</button>
+                  <input type="hidden" data-staff-design="${i}-${j}" value="${esc(d.url)}">
+                  <input type="hidden" data-staff-design-label="${i}-${j}" value="${esc(d.label || '')}">
+                  <span class="upload-status" id="status-staff-design-${i}-${j}"></span>
+                </div>
+              `).join('')}
+            </div>
+            <button class="btn-add" onclick="addStaffDesign(${i})">+ 作品を追加</button>
+          </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
     }
     function collectStaff() {
-      currentContent.staff.members = currentContent.staff.members.map((m, i) => ({
-        name: document.querySelector(`[data-staff-name="${i}"]`)?.value || '',
-        role: document.querySelector(`[data-staff-role="${i}"]`)?.value || '',
-        desc: document.querySelector(`[data-staff-desc="${i}"]`)?.value || '',
-        photoUrl: document.querySelector(`[data-staff-photo="${i}"]`)?.value || ''
-      }));
+      currentContent.staff.members = currentContent.staff.members.map((m, i) => {
+        const designs = [];
+        (m.designs || []).forEach((d, j) => {
+          const url   = document.querySelector(`[data-staff-design="${i}-${j}"]`)?.value || '';
+          const label = document.querySelector(`[data-staff-design-label="${i}-${j}"]`)?.value || '';
+          designs.push({ url, label });
+        });
+        return {
+          name:     document.querySelector(`[data-staff-name="${i}"]`)?.value || '',
+          role:     document.querySelector(`[data-staff-role="${i}"]`)?.value || '',
+          desc:     document.querySelector(`[data-staff-desc="${i}"]`)?.value || '',
+          photoUrl: document.querySelector(`[data-staff-photo="${i}"]`)?.value || '',
+          designs
+        };
+      });
     }
     function addStaff() {
       collectAll();
-      currentContent.staff.members.push({ name: '', role: '', desc: '', photoUrl: '' });
+      currentContent.staff.members.push({ name: '', role: '', desc: '', photoUrl: '', designs: [] });
       renderStaffList();
     }
     function removeStaff(i) {
       collectAll();
       currentContent.staff.members.splice(i, 1);
+      renderStaffList();
+    }
+    function addStaffDesign(i) {
+      collectAll();
+      if (!currentContent.staff.members[i].designs) currentContent.staff.members[i].designs = [];
+      currentContent.staff.members[i].designs.push({ url: '', label: '' });
+      renderStaffList();
+    }
+    function removeStaffDesign(i, j) {
+      collectAll();
+      currentContent.staff.members[i].designs.splice(j, 1);
       renderStaffList();
     }
 
@@ -1064,17 +1151,35 @@
           const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
 
           // Set value to the hidden input
-          const hidden = document.querySelector(`[data-path="${_imageTargetId}"]`)
-            || document.querySelector(`[data-staff-photo="${_imageTargetId.split('-').pop()}"]`)
-            || document.querySelector(`[data-gal-url="${_imageTargetId.split('-').pop()}"]`)
-            || document.querySelector(`[data-int-url="${_imageTargetId.split('-').pop()}"]`);
+          let hidden = document.querySelector(`[data-path="${_imageTargetId}"]`);
+          if (!hidden) {
+            const tail = _imageTargetId.split('-').pop();
+            if (_imageTargetId.startsWith('staff-design-')) {
+              // e.g. staff-design-0-2  →  key = "0-2"
+              const key = _imageTargetId.slice('staff-design-'.length);
+              hidden = document.querySelector(`[data-staff-design="${key}"]`);
+            } else {
+              hidden = document.querySelector(`[data-staff-photo="${tail}"]`)
+                    || document.querySelector(`[data-gal-url="${tail}"]`)
+                    || document.querySelector(`[data-int-url="${tail}"]`);
+            }
+          }
           if (hidden) hidden.value = dataUrl;
 
           // Show preview
           const preview = document.getElementById('preview-' + _imageTargetId);
           if (preview) {
-            preview.src = dataUrl;
-            preview.style.display = 'block';
+            if (preview.tagName === 'IMG') {
+              preview.src = dataUrl;
+              preview.style.display = 'block';
+            } else {
+              // placeholder div → replace with img
+              const newImg = document.createElement('img');
+              newImg.src = dataUrl;
+              newImg.className = 'staff-design-preview';
+              newImg.id = preview.id;
+              preview.replaceWith(newImg);
+            }
           }
 
           if (statusEl) statusEl.textContent = '選択済み';

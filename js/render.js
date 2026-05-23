@@ -48,8 +48,10 @@ function renderStaff(s) {
   const grid = document.querySelector('.staff-grid');
   if (!grid || !s.members.length) return;
 
-  grid.innerHTML = s.members.map(m => `
-    <div class="staff-card fade-in">
+  grid.innerHTML = s.members.map((m, i) => {
+    const designCount = (m.designs || []).filter(d => d.url).length;
+    return `
+    <div class="staff-card fade-in" data-member-index="${i}">
       <div class="staff-photo">
         ${m.photoUrl
           ? `<img src="${escapeAttr(m.photoUrl)}" alt="${escapeAttr(m.name)}">`
@@ -58,8 +60,11 @@ function renderStaff(s) {
       <h3 class="staff-name">${escapeHtml(m.name)}</h3>
       <p class="staff-role">${escapeHtml(m.role)}</p>
       <p class="staff-desc">${escapeHtml(m.desc)}</p>
+      <p class="staff-designs-btn">
+        作品を見る${designCount > 0 ? ` <span class="staff-designs-count">(${designCount}枚)</span>` : ''}
+      </p>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function renderMenu(m) {

@@ -1292,6 +1292,183 @@ body {
 }
 
 /* ===========================
+   Staff Designs Modal
+   =========================== */
+.staff-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.staff-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.staff-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 45, 60, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.staff-modal-box {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border-radius: 20px;
+  width: min(92vw, 680px);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 24px 64px rgba(30, 45, 60, 0.25);
+  transform: scale(0.94) translateY(16px);
+  transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.staff-modal.open .staff-modal-box {
+  transform: scale(1) translateY(0);
+}
+.staff-modal-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.4rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: var(--bg-cream);
+  color: var(--text-medium);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.staff-modal-close:hover {
+  background: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
+}
+.staff-modal-profile {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+.staff-modal-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2.5px solid var(--sky-blue);
+  flex-shrink: 0;
+}
+.staff-modal-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.staff-modal-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--light-blue), var(--sky-blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+}
+.staff-modal-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--text-dark);
+  margin-bottom: 0.25rem;
+}
+.staff-modal-role {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--accent-blue);
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+}
+.staff-modal-desc {
+  font-size: 0.82rem;
+  color: var(--text-medium);
+  line-height: 1.85;
+}
+.staff-modal-gallery-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  margin-bottom: 1.2rem;
+}
+.staff-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.staff-modal-grid-item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 6px;
+  cursor: zoom-in;
+}
+.staff-modal-grid-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.staff-modal-grid-item:hover img {
+  transform: scale(1.06);
+}
+.staff-modal-empty {
+  text-align: center;
+  color: var(--text-light);
+  font-size: 0.82rem;
+  padding: 2.5rem 0 1rem;
+  letter-spacing: 0.05em;
+}
+.staff-designs-btn {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-blue);
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border-light);
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+.staff-card:hover .staff-designs-btn {
+  color: var(--deep-blue);
+}
+.staff-designs-count {
+  color: var(--text-light);
+  font-size: 0.68rem;
+}
+@media (max-width: 480px) {
+  .staff-modal-grid { grid-template-columns: repeat(2, 1fr); }
+  .staff-modal-profile { flex-direction: column; align-items: center; text-align: center; }
+  .staff-modal-box { padding: 2rem 1.2rem; }
+}
+
+/* ===========================
    Stagger & Name Animations
    =========================== */
 

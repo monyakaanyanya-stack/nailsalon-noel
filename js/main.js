@@ -165,4 +165,66 @@ document.addEventListener('DOMContentLoaded', () => {
   staggerReveal('.staff-grid',   '.staff-card',  110);
   staggerReveal('.reviews-grid', '.review-card',  90);
   staggerReveal('.faq-list',     '.faq-item',     65);
+
+  // ---- Staff designs modal ----
+  const staffModal = document.getElementById('staff-modal');
+  const smPhoto    = document.getElementById('sm-photo');
+  const smName     = document.getElementById('sm-name');
+  const smRole     = document.getElementById('sm-role');
+  const smDesc     = document.getElementById('sm-desc');
+  const smGrid     = document.getElementById('sm-grid');
+  const smEmpty    = document.getElementById('sm-empty');
+
+  function openStaffModal(member) {
+    if (!staffModal) return;
+    smPhoto.innerHTML = member.photoUrl
+      ? `<img src="${member.photoUrl}" alt="${member.name}">`
+      : '<div class="staff-photo-placeholder">PHOTO</div>';
+    smName.textContent = member.name;
+    smRole.textContent = member.role;
+    smDesc.textContent = member.desc;
+
+    const designs = (member.designs || []).filter(d => d.url);
+    smGrid.innerHTML = designs.map(d =>
+      `<div class="staff-modal-grid-item"><img src="${d.url}" alt="${d.label || ''}"></div>`
+    ).join('');
+    smEmpty.style.display = designs.length ? 'none' : '';
+    smGrid.style.display  = designs.length ? ''     : 'none';
+
+    smGrid.querySelectorAll('.staff-modal-grid-item img').forEach((img, idx) => {
+      img.addEventListener('click', () => {
+        const allImgs = [...smGrid.querySelectorAll('.staff-modal-grid-item img')];
+        openLightbox(allImgs, idx);
+      });
+    });
+
+    staffModal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeStaffModal() {
+    staffModal?.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  if (staffModal) {
+    staffModal.querySelector('.staff-modal-close')
+      ?.addEventListener('click', closeStaffModal);
+    staffModal.querySelector('.staff-modal-backdrop')
+      ?.addEventListener('click', closeStaffModal);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && staffModal.classList.contains('open')) closeStaffModal();
+    });
+  }
+
+  // Staff card click → open modal
+  document.querySelector('.staff-grid')?.addEventListener('click', e => {
+    const card = e.target.closest('.staff-card');
+    if (!card) return;
+    const idx = parseInt(card.dataset.memberIndex, 10);
+    if (isNaN(idx)) return;
+    const content = loadContent();
+    const member  = content.staff.members[idx];
+    if (member) openStaffModal(member);
+  });
 });
