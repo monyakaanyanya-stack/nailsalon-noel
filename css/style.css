@@ -1079,6 +1079,28 @@ body {
   color: var(--accent-blue);
 }
 
+.footer-ig-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  font-size: 0.78rem;
+  transition: color 0.3s ease;
+  margin-top: 0.8rem;
+}
+
+.footer-ig-link:hover {
+  color: var(--accent-blue);
+}
+
+.footer-ig-link svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
 .footer-bottom {
   text-align: center;
   padding-top: 1.5rem;
@@ -1267,6 +1289,96 @@ body {
   .section-title {
     font-size: 1.8rem;
   }
+}
+
+/* ===========================
+   Lightbox
+   =========================== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.lightbox.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lightbox-inner {
+  max-width: 92vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.7);
+  display: block;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 46px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.lightbox-close:hover {
+  color: #fff;
+}
+
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 14px 18px;
+  border-radius: 6px;
+  line-height: 1;
+  transition: background 0.2s, color 0.2s;
+}
+
+.lightbox-prev { left: 16px; }
+.lightbox-next { right: 16px; }
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.gallery-item img {
+  cursor: zoom-in;
+}
+
+@media (max-width: 768px) {
+  .lightbox-prev { left: 8px; padding: 10px 13px; }
+  .lightbox-next { right: 8px; padding: 10px 13px; }
 }
 
 /* ===========================
