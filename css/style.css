@@ -1219,9 +1219,16 @@ body {
   }
 
   .about-image {
-    max-width: 100%;
-    margin: 0 auto;
-    aspect-ratio: 4/3;
+    width: calc(100% + 3rem);
+    max-width: none;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    aspect-ratio: 16/9;
+    border-radius: 0;
+  }
+
+  .about-image::after {
+    display: none;
   }
 
   .about-features {
