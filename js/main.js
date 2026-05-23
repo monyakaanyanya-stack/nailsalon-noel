@@ -1,8 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Navbar scroll effect
+  // Navbar scroll effect + Floating LINE button
   const navbar = document.querySelector('.navbar');
+  const floatLineBtn = document.querySelector('.float-line-btn');
   window.addEventListener('scroll', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 50);
+    if (floatLineBtn) {
+      floatLineBtn.classList.toggle('visible', window.scrollY > 400);
+    }
   });
 
   // Mobile navigation
