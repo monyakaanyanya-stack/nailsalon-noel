@@ -117,7 +117,7 @@ const DEFAULT_CONTENT = {
     mapEmbedUrl: ''
   },
   contact: {
-    lineUrl: '#',
+    lineUrl: 'https://line.me/R/ti/p/@802orzur',
     hpbUrl: '#',
     instagramUrl: 'https://www.instagram.com/nailsalon.noel',
     note: '※ InstagramのDMではご予約を受け付けておりません'
