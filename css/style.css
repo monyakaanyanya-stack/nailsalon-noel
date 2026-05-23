@@ -1214,41 +1214,25 @@ body {
   }
 
   .about-content {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .about-image {
-    max-width: none;
-    margin: 0;
-  }
-
-  .about-text h3 {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-  }
-
-  .about-text p {
-    font-size: 0.78rem;
-    line-height: 1.9;
-    margin-bottom: 1rem;
+    max-width: 100%;
+    margin: 0 auto;
+    aspect-ratio: 4/3;
   }
 
   .about-features {
     flex-direction: row;
-    gap: 0.6rem;
-    margin-top: 1.2rem;
+    gap: 1rem;
+    justify-content: center;
   }
 
-  .about-feature-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .about-feature-title {
-    font-size: 0.62rem;
+  .about-feature {
+    flex: 0 1 auto;
+    min-width: 70px;
   }
 
   .staff-grid {
@@ -1313,33 +1297,18 @@ body {
     font-size: 1.8rem;
   }
 
-  .about-content {
-    gap: 1rem;
-  }
-
-  .about-text h3 {
-    font-size: 0.95rem;
-    margin-bottom: 0.7rem;
-  }
-
-  .about-text p {
-    font-size: 0.72rem;
-    line-height: 1.8;
-    margin-bottom: 0.8rem;
-  }
-
   .about-features {
-    gap: 0.4rem;
+    gap: 0.6rem;
   }
 
   .about-feature-icon {
-    width: 30px;
-    height: 30px;
-    font-size: 0.85rem;
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
   }
 
   .about-feature-title {
-    font-size: 0.58rem;
+    font-size: 0.65rem;
   }
 }
 
