@@ -854,6 +854,77 @@ body {
 }
 
 /* ==============================
+   Reviews Section
+   ============================== */
+.reviews {
+  background: var(--white);
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.review-card {
+  background: var(--bg-cream);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1.8rem;
+  position: relative;
+}
+
+.review-card::before {
+  content: '"';
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem;
+  color: var(--sky-blue);
+  position: absolute;
+  top: 0.5rem;
+  left: 1.2rem;
+  line-height: 1;
+}
+
+.review-stars {
+  color: #f5a623;
+  font-size: 0.85rem;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+.review-text {
+  font-size: 0.85rem;
+  line-height: 1.9;
+  color: var(--text-medium);
+  margin-bottom: 1.2rem;
+}
+
+.review-author {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  letter-spacing: 0.08em;
+  text-align: right;
+}
+
+.reviews-source {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+.reviews-source a {
+  color: var(--accent-blue);
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==============================
    Contact / CTA Section
    ============================== */
 .contact {
