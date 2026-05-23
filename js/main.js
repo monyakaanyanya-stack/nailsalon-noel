@@ -143,4 +143,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const allImgs = [...document.querySelectorAll('.gallery-grid .gallery-item img')];
     openLightbox(allImgs, allImgs.indexOf(img));
   });
+
+  // ---- Stagger animations ----
+  // グリッド内の子要素を順番に表示
+  function staggerReveal(containerSel, childSel, step) {
+    const container = document.querySelector(containerSel);
+    if (!container) return;
+    // fade-in は stagger で代替するので外す
+    container.querySelectorAll(childSel).forEach(el => el.classList.remove('fade-in'));
+
+    const obs = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      container.querySelectorAll(childSel).forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * step);
+      });
+      obs.unobserve(container);
+    }, { threshold: 0.08 });
+    obs.observe(container);
+  }
+
+  staggerReveal('.staff-grid',   '.staff-card',  110);
+  staggerReveal('.reviews-grid', '.review-card',  90);
+  staggerReveal('.faq-list',     '.faq-item',     65);
 });
