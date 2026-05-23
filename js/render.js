@@ -151,10 +151,11 @@ function renderAccess(a) {
       <span class="access-info-label">サロン名</span>
       <span class="access-info-value">${escapeHtml(a.salonName)}</span>
     </div>
+    ${a.address ? `
     <div class="access-info-item">
-      <span class="access-info-label">エリア</span>
-      <span class="access-info-value">${escapeHtml(a.area)}</span>
-    </div>
+      <span class="access-info-label">住所</span>
+      <span class="access-info-value">${escapeHtml(a.address).replace(/\n/g, '<br>')}</span>
+    </div>` : ''}
     <div class="access-info-item">
       <span class="access-info-label">最寄り駅</span>
       <span class="access-info-value">${a.stations.split('\n').map(s => escapeHtml(s)).join('<br>')}</span>
