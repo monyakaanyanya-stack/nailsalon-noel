@@ -178,7 +178,7 @@ function renderAccess(a) {
   if (mapEl) {
     const src = a.mapEmbedUrl
       ? escapeAttr(a.mapEmbedUrl)
-      : `https://maps.google.com/maps?q=${encodeURIComponent(a.address || a.area)}&hl=ja&output=embed`;
+      : `https://maps.google.com/maps?q=${encodeURIComponent(a.salonName + ' ' + (a.address || a.area))}&hl=ja&z=17&output=embed`;
     mapEl.innerHTML = `<iframe src="${src}" width="100%" height="100%" style="border:0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
   }
 }
