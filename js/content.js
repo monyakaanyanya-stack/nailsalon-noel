@@ -118,7 +118,7 @@ const DEFAULT_CONTENT = {
   },
   contact: {
     lineUrl: 'https://line.me/R/ti/p/@802orzur',
-    hpbUrl: '#',
+    hpbUrl: 'https://beauty.hotpepper.jp/kr/slnH000721618/',
     instagramUrl: 'https://www.instagram.com/nailsalon.noel',
     note: '※ InstagramのDMではご予約を受け付けておりません'
   }
