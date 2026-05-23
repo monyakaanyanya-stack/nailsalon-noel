@@ -175,8 +175,11 @@ function renderAccess(a) {
   `;
 
   const mapEl = document.querySelector('.access-map');
-  if (mapEl && a.mapEmbedUrl) {
-    mapEl.innerHTML = `<iframe src="${escapeAttr(a.mapEmbedUrl)}" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+  if (mapEl) {
+    const src = a.mapEmbedUrl
+      ? escapeAttr(a.mapEmbedUrl)
+      : `https://maps.google.com/maps?q=${encodeURIComponent(a.address || a.area)}&hl=ja&output=embed`;
+    mapEl.innerHTML = `<iframe src="${src}" width="100%" height="100%" style="border:0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
   }
 }
 
