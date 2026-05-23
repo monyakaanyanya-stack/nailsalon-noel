@@ -320,6 +320,29 @@
       border: 1px solid #eee;
       margin-top: 0.3rem;
     }
+    .img-upload-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.3rem;
+    }
+    .btn-upload {
+      padding: 0.5rem 1rem;
+      background: #5a9bb5;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-upload:active { background: #3a7a94; }
+    .upload-status {
+      font-size: 0.7rem;
+      color: #888;
+    }
   </style>
 </head>
 <body>
@@ -397,8 +420,13 @@
             <textarea data-path="concept.paragraph2"></textarea>
           </div>
           <div class="field">
-            <label class="field-label">画像URL</label>
-            <input type="url" data-path="concept.imageUrl" placeholder="https://...">
+            <label class="field-label">画像</label>
+            <div class="img-upload-row">
+              <button class="btn-upload" onclick="pickImage('concept.imageUrl')">写真を選ぶ</button>
+              <span class="upload-status" id="status-concept.imageUrl"></span>
+            </div>
+            <input type="hidden" data-path="concept.imageUrl">
+            <img class="img-preview" id="preview-concept.imageUrl" style="display:none">
           </div>
           <div id="conceptFeatures"></div>
         </div>
@@ -651,6 +679,14 @@
           el.value = val || '';
         }
       });
+      // Show concept image preview if exists
+      const conceptImg = document.getElementById('preview-concept.imageUrl');
+      if (conceptImg && c.concept.imageUrl) {
+        conceptImg.src = c.concept.imageUrl;
+        conceptImg.style.display = 'block';
+        const st = document.getElementById('status-concept.imageUrl');
+        if (st) st.textContent = '選択済み';
+      }
       renderConceptFeatures();
       renderStaffList();
       renderMenuCategories();
@@ -731,9 +767,13 @@
             <textarea data-staff-desc="${i}">${esc(m.desc)}</textarea>
           </div>
           <div class="field">
-            <label class="field-label">写真URL</label>
-            <input type="url" data-staff-photo="${i}" value="${esc(m.photoUrl)}" placeholder="https://...">
-            ${m.photoUrl ? `<img src="${esc(m.photoUrl)}" class="img-preview">` : ''}
+            <label class="field-label">写真</label>
+            <div class="img-upload-row">
+              <button class="btn-upload" onclick="pickImage('staff-photo-${i}')">写真を選ぶ</button>
+              <span class="upload-status" id="status-staff-photo-${i}"></span>
+            </div>
+            <input type="hidden" data-staff-photo="${i}" value="${esc(m.photoUrl)}">
+            ${m.photoUrl ? `<img src="${esc(m.photoUrl)}" class="img-preview" id="preview-staff-photo-${i}">` : `<img class="img-preview" id="preview-staff-photo-${i}" style="display:none">`}
           </div>
         </div>
       `).join('');
@@ -758,7 +798,7 @@
     }
 
     // --- Menu ---
-    let activeMenuCat = 0;
+    var activeMenuCat = 0;
     function renderMenuCategories() {
       const tabs = document.getElementById('menuCatTabs');
       const contents = document.getElementById('menuCatContents');
@@ -852,9 +892,13 @@
             <input type="text" data-gal-label="${i}" value="${esc(img.label)}">
           </div>
           <div class="field">
-            <label class="field-label">画像URL</label>
-            <input type="url" data-gal-url="${i}" value="${esc(img.url)}" placeholder="https://...">
-            ${img.url ? `<img src="${esc(img.url)}" class="img-preview">` : ''}
+            <label class="field-label">画像</label>
+            <div class="img-upload-row">
+              <button class="btn-upload" onclick="pickImage('gal-url-${i}')">写真を選ぶ</button>
+              <span class="upload-status" id="status-gal-url-${i}"></span>
+            </div>
+            <input type="hidden" data-gal-url="${i}" value="${esc(img.url)}">
+            ${img.url ? `<img src="${esc(img.url)}" class="img-preview" id="preview-gal-url-${i}">` : `<img class="img-preview" id="preview-gal-url-${i}" style="display:none">`}
           </div>
         </div>
       `).join('');
@@ -890,9 +934,13 @@
             <input type="text" data-int-label="${i}" value="${esc(img.label)}">
           </div>
           <div class="field">
-            <label class="field-label">画像URL</label>
-            <input type="url" data-int-url="${i}" value="${esc(img.url)}" placeholder="https://...">
-            ${img.url ? `<img src="${esc(img.url)}" class="img-preview">` : ''}
+            <label class="field-label">画像</label>
+            <div class="img-upload-row">
+              <button class="btn-upload" onclick="pickImage('int-url-${i}')">写真を選ぶ</button>
+              <span class="upload-status" id="status-int-url-${i}"></span>
+            </div>
+            <input type="hidden" data-int-url="${i}" value="${esc(img.url)}">
+            ${img.url ? `<img src="${esc(img.url)}" class="img-preview" id="preview-int-url-${i}">` : `<img class="img-preview" id="preview-int-url-${i}" style="display:none">`}
           </div>
         </div>
       `).join('');
@@ -972,6 +1020,66 @@
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2000);
     }
+
+    // --- Image Upload ---
+    let _imageTargetId = null;
+    const _fileInput = document.createElement('input');
+    _fileInput.type = 'file';
+    _fileInput.accept = 'image/*';
+    _fileInput.style.display = 'none';
+    document.body.appendChild(_fileInput);
+
+    function pickImage(targetId) {
+      _imageTargetId = targetId;
+      _fileInput.value = '';
+      _fileInput.click();
+    }
+
+    _fileInput.addEventListener('change', () => {
+      const file = _fileInput.files[0];
+      if (!file || !_imageTargetId) return;
+
+      const statusEl = document.getElementById('status-' + _imageTargetId);
+      if (statusEl) statusEl.textContent = '圧縮中...';
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxSize = 800;
+          let w = img.width, h = img.height;
+          if (w > maxSize || h > maxSize) {
+            if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+            else { w = Math.round(w * maxSize / h); h = maxSize; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+          // Set value to the hidden input
+          const hidden = document.querySelector(`[data-path="${_imageTargetId}"]`)
+            || document.querySelector(`[data-staff-photo="${_imageTargetId.split('-').pop()}"]`)
+            || document.querySelector(`[data-gal-url="${_imageTargetId.split('-').pop()}"]`)
+            || document.querySelector(`[data-int-url="${_imageTargetId.split('-').pop()}"]`);
+          if (hidden) hidden.value = dataUrl;
+
+          // Show preview
+          const preview = document.getElementById('preview-' + _imageTargetId);
+          if (preview) {
+            preview.src = dataUrl;
+            preview.style.display = 'block';
+          }
+
+          if (statusEl) statusEl.textContent = '選択済み';
+          showToast('画像を読み込みました');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
   </script>
 </body>
 </html>
