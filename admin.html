@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noël 管理ページ</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 15px; }
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    /* Login */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #e8f4f8, #d4eef5);
+    }
+    .login-box {
+      background: #fff;
+      padding: 2.5rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+    .login-box h1 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #5ba4b8;
+    }
+    .login-box p { font-size: 0.8rem; color: #999; margin-bottom: 1.5rem; }
+    .login-box input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      -webkit-appearance: none;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 0.8rem;
+      background: #7fc4d8;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .login-error { color: #e74c3c; font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+
+    /* Header */
+    .admin-header {
+      background: #fff;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .admin-header h1 { font-size: 1rem; font-weight: 500; color: #5ba4b8; }
+    .admin-header-actions { display: flex; gap: 0.5rem; }
+    .admin-header-actions a, .admin-header-actions button {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background: #fff;
+      color: #555;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* Main */
+    .admin-main { display: none; }
+    .admin-main.active { display: block; }
+
+    /* Section Card */
+    .admin-section {
+      background: #fff;
+      margin: 0.8rem;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .admin-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.2rem;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .admin-section-header h2 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .admin-section-header .chevron {
+      transition: transform 0.3s;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+    .admin-section.open .chevron { transform: rotate(180deg); }
+    .admin-section-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .admin-section.open .admin-section-body { max-height: 5000px; }
+    .admin-section-inner { padding: 1rem 1.2rem; }
+
+    /* Toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .toggle-row label { font-size: 0.85rem; color: #666; }
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #ddd;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    .toggle input:checked + .toggle-slider { background: #7fc4d8; }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+    /* Form Elements */
+    .field { margin-bottom: 1rem; }
+    .field-label {
+      display: block;
+      font-size: 0.75rem;
+      color: #888;
+      margin-bottom: 0.3rem;
+      font-weight: 500;
+    }
+    .field input, .field textarea, .field select {
+      width: 100%;
+      padding: 0.7rem 0.8rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: #fafafa;
+      -webkit-appearance: none;
+    }
+    .field textarea { min-height: 80px; resize: vertical; line-height: 1.6; }
+    .field input:focus, .field textarea:focus {
+      outline: none;
+      border-color: #7fc4d8;
+      background: #fff;
+    }
+
+    /* Item List */
+    .item-card {
+      background: #f9fafb;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      position: relative;
+    }
+    .item-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .item-card-title { font-size: 0.8rem; font-weight: 500; color: #5ba4b8; }
+    .btn-remove {
+      background: none;
+      border: none;
+      color: #e74c3c;
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+    }
+    .btn-add {
+      display: block;
+      width: 100%;
+      padding: 0.7rem;
+      background: #f0f8fb;
+      border: 1px dashed #b8dce8;
+      border-radius: 8px;
+      color: #5ba4b8;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: center;
+      font-family: inherit;
+      margin-top: 0.5rem;
+    }
+    .btn-add:active { background: #e0f2f7; }
+
+    /* Category Tabs in Admin */
+    .admin-cat-tabs {
+      display: flex;
+      gap: 0.3rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .admin-cat-tab {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .admin-cat-tab.active {
+      background: #7fc4d8;
+      color: #fff;
+      border-color: #7fc4d8;
+    }
+    .admin-cat-content { display: none; }
+    .admin-cat-content.active { display: block; }
+
+    /* Floating Save Bar */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      padding: 0.8rem 1.2rem;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+      display: flex;
+      gap: 0.5rem;
+      z-index: 100;
+    }
+    .btn-save {
+      flex: 1;
+      padding: 0.8rem;
+      background: #7fc4d8;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+    }
+    .btn-save:active { background: #5ba4b8; }
+    .btn-preview {
+      padding: 0.8rem 1.2rem;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #333;
+      color: #fff;
+      padding: 0.6rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 200;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Image preview */
+    .img-preview {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      margin-top: 0.3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <h1>Noel 管理ページ</h1>
+      <p>パスワードを入力してください</p>
+      <input type="password" id="loginPassword" placeholder="パスワード" autocomplete="off">
+      <button onclick="doLogin()">ログイン</button>
+      <p class="login-error" id="loginError">パスワードが違います</p>
+    </div>
+  </div>
+
+  <!-- Admin Main -->
+  <div id="adminMain" class="admin-main">
+    <header class="admin-header">
+      <h1>Noel 管理</h1>
+      <div class="admin-header-actions">
+        <a href="index.html" target="_blank">サイト確認</a>
+        <button onclick="doLogout()">ログアウト</button>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <div class="admin-section open">
+      <div class="admin-section-header" onclick="toggleAdminSection(this)">
+        <h2>🏠 ヒーロー（トップ画面）</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="admin-section-body">
+        <div class="admin-section-inner">
+          <div class="field">
+            <label class="field-label">サブタイトル（上）</label>
+            <input type="text" data-path="hero.subtitleTop">
+          </div>
+          <div class="field">
+            <label class="field-label">メインタイトル</label>
+            <input type="text" data-path="hero.title">
+          </div>
+          <div class="field">
+            <label class="field-label">キャッチコピー</label>
+            <input type="text" data-path="hero.subtitle">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONCEPT -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection(this)">
+        <h2>✨ コンセプト</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="admin-section-body">
+        <div class="admin-section-inner">
+          <div class="toggle-row">
+            <label>セクションを表示</label>
+            <div class="toggle">
+              <input type="checkbox" data-path="concept.visible">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">見出し（改行で改行表示）</label>
+            <textarea rows="2" data-path="concept.heading"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">本文1</label>
+            <textarea data-path="concept.paragraph1"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">本文2</label>
+            <textarea data-path="concept.paragraph2"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">画像URL</label>
+            <input type="url" data-path="concept.imageUrl" placeholder="https://...">
+          </div>
+          <div id="conceptFeatures"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection(this)">
+        <h2>👤 スタッフ</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="admin-section-body">
+        <div class="admin-section-inner">
+          <div class="toggle-row">
+            <label>セクションを表示</label>
+            <div class="toggle">
+              <input type="checkbox" data-path="staff.visible">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          <div id="staffList"></div>
+          <button class="btn-add" onclick="addStaff()">+ スタッフを追加</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENU -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection(this)">
+        <h2>📋 メニュー・料金</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="admin-section-body">
+        <div class="admin-section-inner">
+          <div class="toggle-row">
+            <label>セクションを表示</label>
+            <div class="toggle">
+              <input type="checkbox" data-path="menu.visible">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">注意書き</label>
+            <textarea data-path="menu.note"></textarea>
+          </div>
+          <div class="admin-cat-tabs" id="menuCatTabs"></div>
+          <div id="menuCatContents"></div>
+          <button class="btn-add" onclick="addMenuCategory()">+ カテゴリを追加</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection(this)">
+        <h2>🖼 ギャラリー</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="admin-section-body">
+        <div class="admin-section-inner">
+          <div class="toggle-row">
+            <label>セクションを表示</label>
+            <div class="toggle">
+              <input type="checkbox" data-path="gallery.visible">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          <div id="galleryList"></div>
+          <button class="btn-add" onclick="addGalleryImage()">+ 画像を追加</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERIOR -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection(this)">
+        <h2>🏪 サロンの雰囲気</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="admin-section-body">
+        <div class="admin-section-inner">
+          <div class="toggle-row">
+            <label>セクションを表示</label>
+            <div class="toggle">
+              <input type="checkbox" data-path="interior.visible">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          <div id="interiorList"></div>
+          <button class="btn-add" onclick="addInteriorImage()">+ 画像を追加</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection(this)">
+        <h2>❓ よくある質問</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="admin-section-body">
+        <div class="admin-section-inner">
+          <div class="toggle-row">
+            <label>セクションを表示</label>
+            <div class="toggle">
+              <input type="checkbox" data-path="faq.visible">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          <div id="faqList"></div>
+          <button class="btn-add" onclick="addFaq()">+ 質問を追加</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCESS -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection(this)">
+        <h2>📍 アクセス</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="admin-section-body">
+        <div class="admin-section-inner">
+          <div class="toggle-row">
+            <label>セクションを表示</label>
+            <div class="toggle">
+              <input type="checkbox" data-path="access.visible">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">サロン名</label>
+            <input type="text" data-path="access.salonName">
+          </div>
+          <div class="field">
+            <label class="field-label">エリア</label>
+            <input type="text" data-path="access.area">
+          </div>
+          <div class="field">
+            <label class="field-label">最寄り駅（改行で複数行）</label>
+            <textarea rows="2" data-path="access.stations"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">営業時間</label>
+            <input type="text" data-path="access.hours">
+          </div>
+          <div class="field">
+            <label class="field-label">定休日</label>
+            <input type="text" data-path="access.holidays">
+          </div>
+          <div class="field">
+            <label class="field-label">対応メニュー</label>
+            <input type="text" data-path="access.features">
+          </div>
+          <div class="field">
+            <label class="field-label">Google Map 埋め込みURL</label>
+            <input type="url" data-path="access.mapEmbedUrl" placeholder="https://www.google.com/maps/embed?...">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection(this)">
+        <h2>📞 予約・お問い合わせ</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="admin-section-body">
+        <div class="admin-section-inner">
+          <div class="field">
+            <label class="field-label">公式LINE URL</label>
+            <input type="url" data-path="contact.lineUrl" placeholder="https://lin.ee/...">
+          </div>
+          <div class="field">
+            <label class="field-label">ホットペッパービューティー URL</label>
+            <input type="url" data-path="contact.hpbUrl" placeholder="https://beauty.hotpepper.jp/...">
+          </div>
+          <div class="field">
+            <label class="field-label">Instagram URL</label>
+            <input type="url" data-path="contact.instagramUrl">
+          </div>
+          <div class="field">
+            <label class="field-label">注意書き</label>
+            <input type="text" data-path="contact.note">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save Bar -->
+    <div class="save-bar">
+      <button class="btn-save" onclick="doSave()">保存する</button>
+      <button class="btn-preview" onclick="window.open('index.html','_blank')">確認</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/content.js"></script>
+  <script>
+    const ADMIN_PASS_KEY = 'noel_admin_pass';
+    const ADMIN_PASSWORD = 'noel2026';
+    let currentContent = null;
+
+    // --- Login ---
+    function doLogin() {
+      const pw = document.getElementById('loginPassword').value;
+      if (pw === ADMIN_PASSWORD) {
+        sessionStorage.setItem(ADMIN_PASS_KEY, 'ok');
+        showAdmin();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+    document.getElementById('loginPassword').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+
+    function doLogout() {
+      sessionStorage.removeItem(ADMIN_PASS_KEY);
+      location.reload();
+    }
+
+    function showAdmin() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminMain').classList.add('active');
+      currentContent = loadContent();
+      populateAll();
+    }
+
+    if (sessionStorage.getItem(ADMIN_PASS_KEY) === 'ok') {
+      showAdmin();
+    }
+
+    // --- Section Toggle ---
+    function toggleAdminSection(header) {
+      header.closest('.admin-section').classList.toggle('open');
+    }
+
+    // --- Populate Fields ---
+    function populateAll() {
+      const c = currentContent;
+      document.querySelectorAll('[data-path]').forEach(el => {
+        const val = getByPath(c, el.dataset.path);
+        if (el.type === 'checkbox') {
+          el.checked = val !== false;
+        } else {
+          el.value = val || '';
+        }
+      });
+      renderConceptFeatures();
+      renderStaffList();
+      renderMenuCategories();
+      renderGalleryList();
+      renderInteriorList();
+      renderFaqList();
+    }
+
+    // --- Collect Fields ---
+    function collectAll() {
+      document.querySelectorAll('[data-path]').forEach(el => {
+        const val = el.type === 'checkbox' ? el.checked : el.value;
+        setByPath(currentContent, el.dataset.path, val);
+      });
+      collectStaff();
+      collectMenu();
+      collectGallery();
+      collectInterior();
+      collectFaq();
+      collectConceptFeatures();
+    }
+
+    // --- Save ---
+    function doSave() {
+      collectAll();
+      if (saveContent(currentContent)) {
+        showToast('保存しました');
+      } else {
+        showToast('保存に失敗しました');
+      }
+    }
+
+    // --- Concept Features ---
+    function renderConceptFeatures() {
+      const container = document.getElementById('conceptFeatures');
+      container.innerHTML = currentContent.concept.features.map((f, i) => `
+        <div class="item-card">
+          <div class="item-card-header">
+            <span class="item-card-title">特徴 ${i + 1}</span>
+          </div>
+          <div class="field">
+            <label class="field-label">アイコン（絵文字）</label>
+            <input type="text" data-cf-icon="${i}" value="${esc(f.icon)}" style="width:60px">
+          </div>
+          <div class="field">
+            <label class="field-label">タイトル</label>
+            <input type="text" data-cf-title="${i}" value="${esc(f.title)}">
+          </div>
+        </div>
+      `).join('');
+    }
+    function collectConceptFeatures() {
+      currentContent.concept.features = currentContent.concept.features.map((f, i) => ({
+        icon: document.querySelector(`[data-cf-icon="${i}"]`)?.value || f.icon,
+        title: document.querySelector(`[data-cf-title="${i}"]`)?.value || f.title
+      }));
+    }
+
+    // --- Staff ---
+    function renderStaffList() {
+      const container = document.getElementById('staffList');
+      container.innerHTML = currentContent.staff.members.map((m, i) => `
+        <div class="item-card">
+          <div class="item-card-header">
+            <span class="item-card-title">スタッフ ${i + 1}</span>
+            <button class="btn-remove" onclick="removeStaff(${i})">削除</button>
+          </div>
+          <div class="field">
+            <label class="field-label">名前</label>
+            <input type="text" data-staff-name="${i}" value="${esc(m.name)}">
+          </div>
+          <div class="field">
+            <label class="field-label">役職</label>
+            <input type="text" data-staff-role="${i}" value="${esc(m.role)}">
+          </div>
+          <div class="field">
+            <label class="field-label">紹介文</label>
+            <textarea data-staff-desc="${i}">${esc(m.desc)}</textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">写真URL</label>
+            <input type="url" data-staff-photo="${i}" value="${esc(m.photoUrl)}" placeholder="https://...">
+            ${m.photoUrl ? `<img src="${esc(m.photoUrl)}" class="img-preview">` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+    function collectStaff() {
+      currentContent.staff.members = currentContent.staff.members.map((m, i) => ({
+        name: document.querySelector(`[data-staff-name="${i}"]`)?.value || '',
+        role: document.querySelector(`[data-staff-role="${i}"]`)?.value || '',
+        desc: document.querySelector(`[data-staff-desc="${i}"]`)?.value || '',
+        photoUrl: document.querySelector(`[data-staff-photo="${i}"]`)?.value || ''
+      }));
+    }
+    function addStaff() {
+      collectAll();
+      currentContent.staff.members.push({ name: '', role: '', desc: '', photoUrl: '' });
+      renderStaffList();
+    }
+    function removeStaff(i) {
+      collectAll();
+      currentContent.staff.members.splice(i, 1);
+      renderStaffList();
+    }
+
+    // --- Menu ---
+    let activeMenuCat = 0;
+    function renderMenuCategories() {
+      const tabs = document.getElementById('menuCatTabs');
+      const contents = document.getElementById('menuCatContents');
+      const cats = currentContent.menu.categories;
+
+      tabs.innerHTML = cats.map((cat, i) =>
+        `<button class="admin-cat-tab${i === activeMenuCat ? ' active' : ''}" onclick="switchMenuCat(${i})">${esc(cat.name)}</button>`
+      ).join('');
+
+      contents.innerHTML = cats.map((cat, ci) => `
+        <div class="admin-cat-content${ci === activeMenuCat ? ' active' : ''}" data-menu-cat="${ci}">
+          <div class="field">
+            <label class="field-label">カテゴリ名</label>
+            <input type="text" data-catname="${ci}" value="${esc(cat.name)}">
+          </div>
+          <button class="btn-remove" onclick="removeMenuCategory(${ci})" style="margin-bottom:0.8rem;font-size:0.75rem">このカテゴリを削除</button>
+          ${cat.items.map((item, ii) => `
+            <div class="item-card">
+              <div class="item-card-header">
+                <span class="item-card-title">${esc(item.name) || 'メニュー ' + (ii+1)}</span>
+                <button class="btn-remove" onclick="removeMenuItem(${ci},${ii})">削除</button>
+              </div>
+              <div class="field">
+                <label class="field-label">メニュー名</label>
+                <input type="text" data-mi-name="${ci}-${ii}" value="${esc(item.name)}">
+              </div>
+              <div class="field">
+                <label class="field-label">説明</label>
+                <input type="text" data-mi-desc="${ci}-${ii}" value="${esc(item.desc)}">
+              </div>
+              <div class="field">
+                <label class="field-label">料金</label>
+                <input type="text" data-mi-price="${ci}-${ii}" value="${esc(item.price)}">
+              </div>
+            </div>
+          `).join('')}
+          <button class="btn-add" onclick="addMenuItem(${ci})">+ メニューを追加</button>
+        </div>
+      `).join('');
+    }
+    function switchMenuCat(i) {
+      collectAll();
+      activeMenuCat = i;
+      renderMenuCategories();
+    }
+    function collectMenu() {
+      currentContent.menu.categories = currentContent.menu.categories.map((cat, ci) => ({
+        name: document.querySelector(`[data-catname="${ci}"]`)?.value || cat.name,
+        items: cat.items.map((item, ii) => ({
+          name: document.querySelector(`[data-mi-name="${ci}-${ii}"]`)?.value || '',
+          desc: document.querySelector(`[data-mi-desc="${ci}-${ii}"]`)?.value || '',
+          price: document.querySelector(`[data-mi-price="${ci}-${ii}"]`)?.value || ''
+        }))
+      }));
+    }
+    function addMenuItem(ci) {
+      collectAll();
+      currentContent.menu.categories[ci].items.push({ name: '', desc: '', price: '' });
+      renderMenuCategories();
+    }
+    function removeMenuItem(ci, ii) {
+      collectAll();
+      currentContent.menu.categories[ci].items.splice(ii, 1);
+      renderMenuCategories();
+    }
+    function addMenuCategory() {
+      collectAll();
+      currentContent.menu.categories.push({ name: '新しいカテゴリ', items: [] });
+      activeMenuCat = currentContent.menu.categories.length - 1;
+      renderMenuCategories();
+    }
+    function removeMenuCategory(ci) {
+      if (!confirm('このカテゴリを削除しますか？')) return;
+      collectAll();
+      currentContent.menu.categories.splice(ci, 1);
+      activeMenuCat = Math.max(0, activeMenuCat - 1);
+      renderMenuCategories();
+    }
+
+    // --- Gallery ---
+    function renderGalleryList() {
+      const container = document.getElementById('galleryList');
+      container.innerHTML = currentContent.gallery.images.map((img, i) => `
+        <div class="item-card">
+          <div class="item-card-header">
+            <span class="item-card-title">${esc(img.label) || '画像 ' + (i+1)}</span>
+            <button class="btn-remove" onclick="removeGalleryImage(${i})">削除</button>
+          </div>
+          <div class="field">
+            <label class="field-label">ラベル</label>
+            <input type="text" data-gal-label="${i}" value="${esc(img.label)}">
+          </div>
+          <div class="field">
+            <label class="field-label">画像URL</label>
+            <input type="url" data-gal-url="${i}" value="${esc(img.url)}" placeholder="https://...">
+            ${img.url ? `<img src="${esc(img.url)}" class="img-preview">` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+    function collectGallery() {
+      currentContent.gallery.images = currentContent.gallery.images.map((img, i) => ({
+        label: document.querySelector(`[data-gal-label="${i}"]`)?.value || '',
+        url: document.querySelector(`[data-gal-url="${i}"]`)?.value || ''
+      }));
+    }
+    function addGalleryImage() {
+      collectAll();
+      currentContent.gallery.images.push({ url: '', label: '' });
+      renderGalleryList();
+    }
+    function removeGalleryImage(i) {
+      collectAll();
+      currentContent.gallery.images.splice(i, 1);
+      renderGalleryList();
+    }
+
+    // --- Interior ---
+    function renderInteriorList() {
+      const container = document.getElementById('interiorList');
+      container.innerHTML = currentContent.interior.images.map((img, i) => `
+        <div class="item-card">
+          <div class="item-card-header">
+            <span class="item-card-title">${esc(img.label) || '写真 ' + (i+1)}</span>
+            <button class="btn-remove" onclick="removeInteriorImage(${i})">削除</button>
+          </div>
+          <div class="field">
+            <label class="field-label">ラベル</label>
+            <input type="text" data-int-label="${i}" value="${esc(img.label)}">
+          </div>
+          <div class="field">
+            <label class="field-label">画像URL</label>
+            <input type="url" data-int-url="${i}" value="${esc(img.url)}" placeholder="https://...">
+            ${img.url ? `<img src="${esc(img.url)}" class="img-preview">` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+    function collectInterior() {
+      currentContent.interior.images = currentContent.interior.images.map((img, i) => ({
+        label: document.querySelector(`[data-int-label="${i}"]`)?.value || '',
+        url: document.querySelector(`[data-int-url="${i}"]`)?.value || ''
+      }));
+    }
+    function addInteriorImage() {
+      collectAll();
+      currentContent.interior.images.push({ url: '', label: '' });
+      renderInteriorList();
+    }
+    function removeInteriorImage(i) {
+      collectAll();
+      currentContent.interior.images.splice(i, 1);
+      renderInteriorList();
+    }
+
+    // --- FAQ ---
+    function renderFaqList() {
+      const container = document.getElementById('faqList');
+      container.innerHTML = currentContent.faq.items.map((item, i) => `
+        <div class="item-card">
+          <div class="item-card-header">
+            <span class="item-card-title">Q${i + 1}</span>
+            <button class="btn-remove" onclick="removeFaq(${i})">削除</button>
+          </div>
+          <div class="field">
+            <label class="field-label">質問</label>
+            <input type="text" data-faq-q="${i}" value="${esc(item.q)}">
+          </div>
+          <div class="field">
+            <label class="field-label">回答</label>
+            <textarea data-faq-a="${i}">${esc(item.a)}</textarea>
+          </div>
+        </div>
+      `).join('');
+    }
+    function collectFaq() {
+      currentContent.faq.items = currentContent.faq.items.map((item, i) => ({
+        q: document.querySelector(`[data-faq-q="${i}"]`)?.value || '',
+        a: document.querySelector(`[data-faq-a="${i}"]`)?.value || ''
+      }));
+    }
+    function addFaq() {
+      collectAll();
+      currentContent.faq.items.push({ q: '', a: '' });
+      renderFaqList();
+    }
+    function removeFaq(i) {
+      collectAll();
+      currentContent.faq.items.splice(i, 1);
+      renderFaqList();
+    }
+
+    // --- Helpers ---
+    function getByPath(obj, path) {
+      return path.split('.').reduce((o, k) => o?.[k], obj);
+    }
+    function setByPath(obj, path, val) {
+      const keys = path.split('.');
+      const last = keys.pop();
+      const target = keys.reduce((o, k) => o[k] = o[k] || {}, obj);
+      target[last] = val;
+    }
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+  </script>
+</body>
+</html>
