@@ -125,7 +125,7 @@ const DEFAULT_CONTENT = {
     hours: '11:00〜20:00',
     holidays: '不定休',
     features: 'パラジェル / フィルイン対応可能 / 完全予約制',
-    mapEmbedUrl: 'https://maps.google.com/maps?q=ベイステージ元町+横浜市中区山手町27-5&hl=ja&z=18&output=embed'
+    mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3250.7052455317476!2d139.6455542!3d35.437331!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60185d0078bf603d%3A0xc8b6772b33cc2ce3!2z44OZ44Kk44K544OG44O844K45YWD55S6!5e0!3m2!1sja!2sus!4v1780102391659!5m2!1sja!2sus'
   },
   contact: {
     lineUrl: 'https://line.me/R/ti/p/@802orzur',
