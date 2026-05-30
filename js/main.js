@@ -144,6 +144,16 @@ document.addEventListener('DOMContentLoaded', () => {
     openLightbox(allImgs, allImgs.indexOf(img));
   });
 
+  // Interior click → lightbox
+  document.querySelector('.interior-grid')?.addEventListener('click', (e) => {
+    const item = e.target.closest('.interior-item');
+    if (!item) return;
+    const img = item.querySelector('img');
+    if (!img) return;
+    const allImgs = [...document.querySelectorAll('.interior-grid .interior-item img')];
+    openLightbox(allImgs, allImgs.indexOf(img));
+  });
+
   // ---- Stagger animations ----
   // グリッド内の子要素を順番に表示
   function staggerReveal(containerSel, childSel, step) {
