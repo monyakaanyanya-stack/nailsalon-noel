@@ -11,7 +11,7 @@ const DEFAULT_CONTENT = {
     heading: 'あなたの「推し」を\n指先に込めて',
     paragraph1: 'nailsalon Noëlは、横浜・元町中華街エリアにある痛ネイル・キャラクターネイル専門のネイルサロンです。アニメ・ゲーム・アイドル――大好きな推しを細部までこだわったアートで指先にお届けします。',
     paragraph2: '爪への負担を最小限に抑えるパラジェル・フィルインにも対応。推しへの愛も、爪の健康も、どちらも大切にする施術を心がけています。',
-    imageUrl: '',
+    imageUrl: 'images/interior-treatment.jpg',
     features: [
       { icon: '🎨', title: '痛ネイル専門' },
       { icon: '💎', title: 'パラジェル対応' },
@@ -96,9 +96,9 @@ const DEFAULT_CONTENT = {
   interior: {
     visible: true,
     images: [
-      { url: '', label: '施術スペース' },
-      { url: '', label: 'エントランス' },
-      { url: '', label: 'カラー・パーツサンプル' },
+      { url: 'images/interior-treatment.jpg', label: '施術スペース' },
+      { url: 'images/interior-reception.jpg', label: 'エントランス' },
+      { url: 'images/interior-foot.jpg',      label: 'フットケアスペース' },
       { url: '', label: '待合スペース' },
       { url: '', label: 'サンプルディスプレイ' }
     ]
