@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>給与計算アプリ</title>
+<style>
+  :root {
+    --primary: #4a6cf7;
+    --primary-dark: #3a56d4;
+    --bg: #f5f6fa;
+    --card: #ffffff;
+    --text: #2d3436;
+    --text-light: #636e72;
+    --border: #dfe6e9;
+    --success: #00b894;
+    --danger: #e17055;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .header {
+    background: var(--primary);
+    color: #fff;
+    padding: 16px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(74,108,247,.3);
+  }
+  .header h1 { font-size: 18px; font-weight: 700; }
+
+  .container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-light);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+
+  .toggle-group {
+    display: flex;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 3px;
+  }
+  .toggle-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .toggle-btn.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(74,108,247,.3);
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 6px;
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--text);
+    background: #fff;
+    transition: border-color .2s;
+    -webkit-appearance: none;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .form-row {
+    display: flex;
+    gap: 12px;
+  }
+  .form-row .form-group { flex: 1; }
+
+  .hint {
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+
+  .calc-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s;
+    margin-bottom: 16px;
+  }
+  .calc-btn:active { background: var(--primary-dark); }
+
+  .result-section { display: none; }
+  .result-section.show { display: block; }
+
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .label { color: var(--text-light); }
+  .result-row .value { font-weight: 600; }
+
+  .result-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 0 0;
+    margin-top: 6px;
+    border-top: 2px solid var(--primary);
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .result-total .value { color: var(--primary); }
+
+  .pdf-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--success);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s;
+    margin-top: 8px;
+  }
+  .pdf-btn:active { background: #00a884; }
+
+  .employee-fields { display: none; }
+  .employee-fields.show { display: block; }
+
+  .month-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .month-picker button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .month-picker span {
+    font-size: 16px;
+    font-weight: 700;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  /* 税区分トグル */
+  .tax-toggle {
+    display: flex;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 3px;
+    margin-top: 12px;
+  }
+  .tax-toggle button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .tax-toggle button.active {
+    background: var(--danger);
+    color: #fff;
+  }
+  .tax-toggle button:first-child.active {
+    background: var(--primary);
+  }
+
+  /* 履歴 */
+  .history-section { margin-top: 24px; }
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-item .hi-left { flex: 1; }
+  .history-item .hi-name { font-weight: 600; }
+  .history-item .hi-meta { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .history-item .hi-amount { font-weight: 700; color: var(--primary); font-size: 15px; white-space: nowrap; margin-left: 12px; }
+  .history-item .hi-delete {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    color: var(--danger);
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .history-item .hi-delete:active { background: #ffeaea; }
+  .history-empty {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 13px;
+    padding: 16px 0;
+  }
+  .history-clear-btn {
+    width: 100%;
+    padding: 10px;
+    background: none;
+    color: var(--danger);
+    border: 1.5px solid var(--danger);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>給与計算</h1>
+  <div id="taxTableVersion" style="font-size:11px;opacity:.7;margin-top:2px"></div>
+</div>
+
+<div class="container">
+
+  <!-- 対象月 -->
+  <div class="card">
+    <div class="month-picker">
+      <button onclick="changeMonth(-1)">&lt;</button>
+      <span id="monthLabel"></span>
+      <button onclick="changeMonth(1)">&gt;</button>
+    </div>
+  </div>
+
+  <!-- 雇用形態 -->
+  <div class="card">
+    <div class="card-title">雇用形態</div>
+    <div class="toggle-group" id="typeToggle">
+      <button class="toggle-btn active" onclick="setType('parttime', this)">アルバイト</button>
+      <button class="toggle-btn" onclick="setType('fulltime', this)">従業員</button>
+    </div>
+    <!-- 税区分 -->
+    <div class="tax-toggle" id="taxToggle">
+      <button class="active" onclick="setTaxColumn('kou', this)">甲欄</button>
+      <button onclick="setTaxColumn('otsu', this)">乙欄</button>
+    </div>
+    <div class="hint" style="margin-top:6px" id="taxHint">扶養控除等申告書を提出済み</div>
+  </div>
+
+  <!-- 入力フォーム -->
+  <div class="card">
+    <div class="card-title">勤務情報</div>
+
+    <div class="form-group">
+      <label>名前</label>
+      <input type="text" id="name" placeholder="山田 太郎">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>出勤日数</label>
+        <input type="number" id="days" inputmode="numeric" placeholder="20" min="0" max="31">
+      </div>
+      <div class="form-group">
+        <label>合計労働時間</label>
+        <input type="number" id="hours" inputmode="decimal" placeholder="160" min="0" step="0.5">
+        <div class="hint">月の合計時間</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>時給（円）</label>
+      <input type="number" id="hourlyRate" inputmode="numeric" placeholder="1100" min="0">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>残業時間</label>
+        <input type="number" id="overtime" inputmode="decimal" placeholder="0" min="0" step="0.5" value="0">
+        <div class="hint">25%割増</div>
+      </div>
+      <div class="form-group">
+        <label>深夜時間</label>
+        <input type="number" id="nightHours" inputmode="decimal" placeholder="0" min="0" step="0.5" value="0">
+        <div class="hint">22時〜5時 / 25%割増</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>指名単価（円）</label>
+        <input type="number" id="nominationRate" inputmode="numeric" placeholder="500" min="0" value="0">
+      </div>
+      <div class="form-group">
+        <label>指名数</label>
+        <input type="number" id="nominationCount" inputmode="numeric" placeholder="0" min="0" value="0">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>交通費（月額）</label>
+      <input type="number" id="transport" inputmode="numeric" placeholder="0" min="0" value="0">
+    </div>
+
+    <!-- 従業員向け追加項目 -->
+    <div class="employee-fields" id="employeeFields">
+      <div class="form-row">
+        <div class="form-group">
+          <label>健康保険料</label>
+          <input type="number" id="healthIns" inputmode="numeric" placeholder="0" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label>厚生年金</label>
+          <input type="number" id="pension" inputmode="numeric" placeholder="0" min="0" value="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>雇用保険料</label>
+          <input type="number" id="employmentIns" inputmode="numeric" placeholder="0" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label>扶養人数</label>
+          <input type="number" id="dependents" inputmode="numeric" placeholder="0" min="0" value="0">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 計算ボタン -->
+  <button class="calc-btn" onclick="calculate()">計算する</button>
+
+  <!-- 結果 -->
+  <div class="result-section" id="resultSection">
+    <div class="card">
+      <div class="card-title">計算結果</div>
+      <div id="resultBody"></div>
+    </div>
+    <button class="pdf-btn" onclick="exportPDF()">PDFで保存</button>
+  </div>
+
+  <!-- 履歴 -->
+  <div class="history-section">
+    <div class="card">
+      <div class="card-title">計算履歴</div>
+      <div id="historyBody"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- jsPDF CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+
+<script>
+// --- 状態管理 ---
+let currentYear, currentMonth;
+let employmentType = 'parttime';
+let taxColumn = 'kou';
+let taxTable = null;
+
+(async function init() {
+  const now = new Date();
+  currentYear = now.getFullYear();
+  currentMonth = now.getMonth() + 1;
+  updateMonthLabel();
+  renderHistory();
+  await loadTaxTable();
+})();
+
+async function loadTaxTable() {
+  try {
+    const res = await fetch('tax-table.json?v=' + Date.now());
+    taxTable = await res.json();
+    document.getElementById('taxTableVersion').textContent =
+      `税額表: ${taxTable.version}（${taxTable.lastUpdated} 更新）`;
+  } catch (e) {
+    document.getElementById('taxTableVersion').textContent = '税額表の読み込みに失敗';
+    console.error('税額表の読み込みエラー:', e);
+  }
+}
+
+function updateMonthLabel() {
+  document.getElementById('monthLabel').textContent = `${currentYear}年${currentMonth}月`;
+}
+function changeMonth(d) {
+  currentMonth += d;
+  if (currentMonth > 12) { currentMonth = 1; currentYear++; }
+  if (currentMonth < 1) { currentMonth = 12; currentYear--; }
+  updateMonthLabel();
+}
+
+function setType(type, btn) {
+  employmentType = type;
+  document.querySelectorAll('#typeToggle .toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('employeeFields').classList.toggle('show', type === 'fulltime');
+}
+
+function setTaxColumn(col, btn) {
+  taxColumn = col;
+  document.querySelectorAll('#taxToggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('taxHint').textContent =
+    col === 'kou' ? '扶養控除等申告書を提出済み' : '扶養控除等申告書の提出なし（税額高め）';
+}
+
+// --- 源泉徴収税額（JSONテーブル参照） ---
+function calcWithholding(taxableMonthly, dependents, taxCol) {
+  if (taxableMonthly <= 0 || !taxTable) return 0;
+  const dep = Math.min(dependents, 7);
+
+  if (taxCol === 'otsu') {
+    return calcOtsu(taxableMonthly);
+  }
+  return calcKou(taxableMonthly, dep);
+}
+
+function calcKou(amount, dep) {
+  const ranges = taxTable.kou.ranges;
+  for (const row of ranges) {
+    if (amount < row[0]) {
+      return row[dep + 1];
+    }
+  }
+  const lastMax = ranges[ranges.length - 1][0];
+  if (amount >= lastMax) {
+    const overKey = Object.keys(taxTable.kou).find(k => k.startsWith('over'));
+    const brackets = taxTable.kou[overKey].brackets;
+    for (const b of brackets) {
+      if (amount <= b.max) {
+        const tax = Math.round(amount * b.rate - b.deduction - dep * b.perDependent);
+        return Math.max(0, tax);
+      }
+    }
+    const last = brackets[brackets.length - 1];
+    return Math.max(0, Math.round(amount * last.rate - last.deduction - dep * last.perDependent));
+  }
+  return 0;
+}
+
+function calcOtsu(amount) {
+  if (amount <= 0) return 0;
+  const otsu = taxTable.otsu;
+  if (amount < 88000) {
+    return Math.round(amount * otsu.rateUnder88000);
+  }
+  for (const row of otsu.ranges) {
+    if (amount < row[0]) {
+      return row[1];
+    }
+  }
+  const lastMax = otsu.ranges[otsu.ranges.length - 1][0];
+  if (amount >= lastMax) {
+    const overKey = Object.keys(otsu).find(k => k.startsWith('over'));
+    const brackets = otsu[overKey].brackets;
+    for (const b of brackets) {
+      if (amount <= b.max) {
+        return Math.round(amount * b.rate - b.deduction);
+      }
+    }
+    const last = brackets[brackets.length - 1];
+    return Math.round(amount * last.rate - last.deduction);
+  }
+  return 0;
+}
+
+// --- 計算処理 ---
+function calculate() {
+  if (!taxTable) { alert('税額表を読み込み中です。少し待ってから再度お試しください。'); return; }
+  const name = document.getElementById('name').value || '未入力';
+  const days = parseFloat(document.getElementById('days').value) || 0;
+  const hours = parseFloat(document.getElementById('hours').value) || 0;
+  const rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+  const overtime = parseFloat(document.getElementById('overtime').value) || 0;
+  const nightHours = parseFloat(document.getElementById('nightHours').value) || 0;
+  const nominationRate = parseFloat(document.getElementById('nominationRate').value) || 0;
+  const nominationCount = parseInt(document.getElementById('nominationCount').value) || 0;
+  const transport = parseFloat(document.getElementById('transport').value) || 0;
+
+  const basePay = Math.round(hours * rate);
+  const overtimePay = Math.round(overtime * rate * 1.25);
+  const nightPay = Math.round(nightHours * rate * 0.25);
+  const nominationPay = Math.round(nominationRate * nominationCount);
+  let grossPay = basePay + overtimePay + nightPay + nominationPay + transport;
+
+  let healthIns = 0, pension = 0, employmentIns = 0, dependents = 0, socialIns = 0;
+
+  if (employmentType === 'fulltime') {
+    healthIns = parseFloat(document.getElementById('healthIns').value) || 0;
+    pension = parseFloat(document.getElementById('pension').value) || 0;
+    employmentIns = parseFloat(document.getElementById('employmentIns').value) || 0;
+    dependents = parseInt(document.getElementById('dependents').value) || 0;
+    socialIns = healthIns + pension + employmentIns;
+  }
+
+  const taxableAmount = grossPay - transport - socialIns;
+  const withholding = calcWithholding(taxableAmount, dependents, taxColumn);
+  const netPay = grossPay - socialIns - withholding;
+
+  const taxColLabel = taxColumn === 'kou' ? '甲欄' : '乙欄';
+
+  let html = '';
+  html += resultRow('名前', name);
+  html += resultRow('対象月', `${currentYear}年${currentMonth}月`);
+  html += resultRow('雇用形態', employmentType === 'parttime' ? 'アルバイト' : '従業員');
+  html += resultRow('税区分', taxColLabel);
+  html += resultRow('出勤日数', `${days}日`);
+  html += resultRow('労働時間', `${hours}時間`);
+  html += resultRow('時給', formatYen(rate));
+  html += '<div style="height:8px"></div>';
+  html += resultRow('基本給', formatYen(basePay));
+  if (overtimePay > 0) html += resultRow('残業手当', formatYen(overtimePay));
+  if (nightPay > 0) html += resultRow('深夜手当', formatYen(nightPay));
+  if (nominationPay > 0) html += resultRow(`指名料（${formatYen(nominationRate)} × ${nominationCount}件）`, formatYen(nominationPay));
+  if (transport > 0) html += resultRow('交通費', formatYen(transport));
+  html += resultRow('総支給額', formatYen(grossPay), true);
+  html += '<div style="height:8px"></div>';
+
+  if (socialIns > 0) {
+    html += resultRow('健康保険料', `- ${formatYen(healthIns)}`);
+    html += resultRow('厚生年金', `- ${formatYen(pension)}`);
+    html += resultRow('雇用保険料', `- ${formatYen(employmentIns)}`);
+    html += resultRow('社会保険合計', `- ${formatYen(socialIns)}`, true);
+    html += '<div style="height:8px"></div>';
+  }
+
+  html += resultRow('課税対象額', formatYen(taxableAmount));
+  html += resultRow(`源泉徴収税（${taxColLabel}）`, `- ${formatYen(withholding)}`);
+  html += `<div class="result-total"><span>差引支給額（手取り）</span><span class="value">${formatYen(netPay)}</span></div>`;
+
+  document.getElementById('resultBody').innerHTML = html;
+  document.getElementById('resultSection').classList.add('show');
+  document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+
+  window._lastCalc = {
+    name, year: currentYear, month: currentMonth,
+    type: employmentType, taxColumn, taxColLabel, days, hours, rate,
+    overtime, overtimePay, nightHours, nightPay,
+    nominationRate, nominationCount, nominationPay,
+    basePay, transport, grossPay,
+    healthIns, pension, employmentIns, socialIns,
+    dependents, taxableAmount, withholding, netPay
+  };
+
+  saveHistory(window._lastCalc);
+}
+
+function resultRow(label, value, bold) {
+  const style = bold ? 'font-weight:700' : '';
+  return `<div class="result-row"><span class="label">${label}</span><span class="value" style="${style}">${value}</span></div>`;
+}
+
+function formatYen(n) {
+  return '¥' + Math.round(n).toLocaleString();
+}
+
+// --- 履歴管理 ---
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem('payroll_history') || '[]'); }
+  catch { return []; }
+}
+function saveHistory(d) {
+  const history = getHistory();
+  d.savedAt = new Date().toISOString();
+  d.id = Date.now();
+  history.unshift(d);
+  if (history.length > 50) history.length = 50;
+  localStorage.setItem('payroll_history', JSON.stringify(history));
+  renderHistory();
+}
+function deleteHistory(id) {
+  let history = getHistory().filter(h => h.id !== id);
+  localStorage.setItem('payroll_history', JSON.stringify(history));
+  renderHistory();
+}
+function clearHistory() {
+  if (!confirm('全ての履歴を削除しますか？')) return;
+  localStorage.removeItem('payroll_history');
+  renderHistory();
+}
+function renderHistory() {
+  const history = getHistory();
+  const el = document.getElementById('historyBody');
+  if (history.length === 0) {
+    el.innerHTML = '<div class="history-empty">まだ履歴がありません</div>';
+    return;
+  }
+  let html = '';
+  history.forEach(h => {
+    const typeLabel = h.type === 'parttime' ? 'アルバイト' : '従業員';
+    html += `<div class="history-item">
+      <div class="hi-left">
+        <div class="hi-name">${esc(h.name)}</div>
+        <div class="hi-meta">${h.year}年${h.month}月 / ${typeLabel}</div>
+      </div>
+      <div class="hi-amount">${formatYen(h.netPay)}</div>
+      <button class="hi-delete" onclick="deleteHistory(${h.id})">×</button>
+    </div>`;
+  });
+  html += `<button class="history-clear-btn" onclick="clearHistory()">履歴を全て削除</button>`;
+  el.innerHTML = html;
+}
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// --- PDF出力（日本語対応） ---
+function exportPDF() {
+  const d = window._lastCalc;
+  if (!d) return;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+  const pageW = 210;
+  const marginL = 20;
+  const marginR = 190;
+  const colMid = 105;
+  let y = 20;
+
+  // ヘッダー背景
+  doc.setFillColor(74, 108, 247);
+  doc.rect(0, 0, pageW, 35, 'F');
+
+  // タイトル
+  doc.setTextColor(255);
+  doc.setFontSize(22);
+  doc.setFont('helvetica', 'bold');
+  doc.text('PAYSLIP', pageW / 2, y, { align: 'center' });
+  y += 8;
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`${d.year} / ${String(d.month).padStart(2,'0')}`, pageW / 2, y, { align: 'center' });
+  y += 18;
+
+  doc.setTextColor(45, 52, 54);
+  doc.setFontSize(10);
+
+  function addRow(label, value, isBold) {
+    if (isBold) doc.setFont('helvetica', 'bold');
+    else doc.setFont('helvetica', 'normal');
+    doc.text(label, marginL, y);
+    doc.text(String(value), marginR, y, { align: 'right' });
+    y += 7;
+  }
+
+  function addSectionHeader(title) {
+    y += 4;
+    doc.setFillColor(245, 246, 250);
+    doc.rect(marginL, y - 4, marginR - marginL, 8, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text(title, marginL + 3, y + 1);
+    y += 10;
+    doc.setFontSize(10);
+  }
+
+  function addDivider() {
+    doc.setDrawColor(223, 230, 233);
+    doc.setLineWidth(0.3);
+    doc.line(marginL, y, marginR, y);
+    y += 4;
+  }
+
+  // 基本情報 2列
+  const typeLabel = d.type === 'parttime' ? 'Part-time' : 'Full-time';
+  const taxLabel = d.taxColumn === 'kou' ? 'Column A' : 'Column B (Otsu)';
+
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(99, 110, 114);
+  doc.setFontSize(9);
+  doc.text('Name', marginL, y);
+  doc.text('Type', colMid, y);
+  y += 5;
+  doc.setTextColor(45, 52, 54);
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.text(d.name, marginL, y);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.text(typeLabel, colMid, y);
+  y += 7;
+
+  doc.setTextColor(99, 110, 114);
+  doc.setFontSize(9);
+  doc.text('Work Days', marginL, y);
+  doc.text('Work Hours', colMid, y);
+  doc.text('Tax Column', 150, y);
+  y += 5;
+  doc.setTextColor(45, 52, 54);
+  doc.setFontSize(10);
+  doc.text(`${d.days} days`, marginL, y);
+  doc.text(`${d.hours} hrs`, colMid, y);
+  doc.text(taxLabel, 150, y);
+  y += 5;
+
+  addDivider();
+
+  // 支給
+  addSectionHeader('EARNINGS');
+  addRow('Base Pay', formatYen(d.basePay));
+  if (d.overtimePay > 0) addRow('Overtime Pay (x1.25)', formatYen(d.overtimePay));
+  if (d.nightPay > 0) addRow('Night Pay (x0.25)', formatYen(d.nightPay));
+  if (d.nominationPay > 0) addRow(`Nomination (${formatYen(d.nominationRate)} x ${d.nominationCount})`, formatYen(d.nominationPay));
+  if (d.transport > 0) addRow('Transport (non-taxable)', formatYen(d.transport));
+  addDivider();
+  addRow('Gross Pay', formatYen(d.grossPay), true);
+
+  // 控除
+  addSectionHeader('DEDUCTIONS');
+  if (d.socialIns > 0) {
+    addRow('Health Insurance', formatYen(d.healthIns));
+    addRow('Pension', formatYen(d.pension));
+    addRow('Employment Ins.', formatYen(d.employmentIns));
+    addDivider();
+    addRow('Social Insurance Total', formatYen(d.socialIns), true);
+    y += 2;
+  }
+  addRow('Taxable Amount', formatYen(d.taxableAmount));
+  addRow(`Withholding Tax (${taxLabel})`, formatYen(d.withholding));
+
+  // 手取り
+  y += 4;
+  doc.setFillColor(74, 108, 247);
+  doc.rect(marginL, y - 2, marginR - marginL, 14, 'F');
+  doc.setTextColor(255);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Net Pay', marginL + 5, y + 7);
+  doc.text(formatYen(d.netPay), marginR - 5, y + 7, { align: 'right' });
+
+  // フッタ
+  y += 28;
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(150);
+  const today = new Date();
+  doc.text(`Generated: ${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`, pageW / 2, y, { align: 'center' });
+
+  const filename = `payslip_${d.year}${String(d.month).padStart(2,'0')}_${d.name || 'staff'}.pdf`;
+  doc.save(filename);
+}
+</script>
+
+</body>
+</html>
