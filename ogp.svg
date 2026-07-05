@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#f0f7fa"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#5a9bb5"/>
+  <rect x="0" y="622" width="1200" height="8" fill="#5a9bb5"/>
+  <text x="600" y="240" text-anchor="middle" font-family="Georgia, serif" font-size="96" fill="#3a7a94" letter-spacing="8">Noël</text>
+  <text x="600" y="320" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#5a9bb5" letter-spacing="4">nailsalon</text>
+  <text x="600" y="400" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#4a5e6d">横浜・元町中華街 | 痛ネイル・キャラクターネイル専門</text>
+  <text x="600" y="450" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#8a9aaa">パラジェル・フィルイン対応 ｜ 完全予約制</text>
+  <text x="600" y="560" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#5a9bb5">🦋 最高の推しネイルを、あなたの指先に 🦋</text>
+</svg>
