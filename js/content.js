@@ -1,8 +1,8 @@
 const STORAGE_KEY = 'noel_site_content';
-const CONTENT_VERSION = 3;
+const CONTENT_VERSION = 4;
 
 const DEFAULT_CONTENT = {
-  _v: 3,
+  _v: 4,
   hero: {
     subtitleTop: 'YOKOHAMA NAIL SALON',
     title: 'Noël',
@@ -66,13 +66,6 @@ const DEFAULT_CONTENT = {
         role: 'Nail Artist',
         desc: 'ネイリスト歴1年。キャラクターネイルを得意とし、大好きな推しを一本一本丁寧に指先へ描き込みます。お客様の「好き」を全力でカタチにするべく、日々腕を磨いています。',
         photoUrl: 'images/staff/hina.jpg',
-        designs: []
-      },
-      {
-        name: 'はると',
-        role: 'Nail Artist',
-        desc: 'ネイリスト歴1年。まだまだ成長中ですが、一本一本丁寧にお客様の理想のネイルを目指します。笑顔でお迎えし、精一杯施術させていただきます。',
-        photoUrl: 'images/staff/haruto.jpg',
         designs: []
       }
     ]
@@ -172,7 +165,7 @@ function loadContent() {
         if (parsed._v < 2) {
           merged.concept.features = JSON.parse(JSON.stringify(DEFAULT_CONTENT.concept.features));
         }
-        if (!parsed._v || parsed._v < 3) {
+        if (!parsed._v || parsed._v < 4) {
           merged.staff.members = JSON.parse(JSON.stringify(DEFAULT_CONTENT.staff.members));
         }
         merged._v = CONTENT_VERSION;
