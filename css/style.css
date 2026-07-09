@@ -2111,3 +2111,251 @@ body {
     height: 18px;
   }
 }
+
+/* ==========================================================
+   Refinement pass: 表示修正 + 高級感（余白・タイポ・写真）
+   ========================================================== */
+
+/* ---- ギャラリー: 写真ゼロ時のInstagram案内（空枠の代わり） ---- */
+.gallery-instagram-feature {
+  margin-top: 0;
+  padding: 3.5rem 2rem;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  background:
+    radial-gradient(600px 200px at 50% -60px, rgba(208,232,240,0.35), transparent 70%),
+    var(--bg-cream);
+}
+
+.gallery-instagram-feature a {
+  border-bottom: none;
+  flex-direction: column;
+  gap: 1.1rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  color: var(--text-medium);
+}
+
+.gallery-instagram-feature a::before {
+  content: 'LATEST WORKS';
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  color: var(--gold-accent);
+}
+
+.gallery-instagram-feature a::after {
+  content: 'View Instagram →';
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 0.8rem 2.4rem;
+  border: 1px solid var(--gold-accent);
+  border-radius: 40px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  color: var(--gold-accent);
+  transition: all 0.3s ease;
+}
+
+.gallery-instagram-feature a:hover::after {
+  background: var(--gold-accent);
+  color: var(--white);
+  box-shadow: 0 8px 24px rgba(201,169,110,0.35);
+}
+
+/* ---- サロンの雰囲気: 枚数別レイアウト（空枠を出さない） ---- */
+.interior-grid[data-count="3"] {
+  grid-template-columns: 1.7fr 1fr;
+}
+.interior-grid[data-count="4"] .interior-item:nth-child(4) {
+  grid-column: 2 / -1;
+}
+.interior-grid[data-count="2"] {
+  grid-template-columns: 1.7fr 1fr;
+}
+.interior-grid[data-count="2"] .interior-item:nth-child(2) {
+  grid-row: 1 / -1;
+}
+.interior-grid[data-count="1"] {
+  grid-template-columns: 1fr;
+  height: 420px;
+}
+
+@media (max-width: 768px) {
+  .interior-grid[data-count] {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ---- 余白のリズム: セクションに呼吸を ---- */
+.section {
+  padding: 8.5rem 2rem;
+}
+
+.section-header {
+  margin-bottom: 4.5rem;
+}
+
+/* ---- 見出しの格上げ ---- */
+.section-label {
+  letter-spacing: 0.45em;
+  color: var(--gold-accent);
+}
+
+.section-title {
+  font-size: 2.5rem;
+  letter-spacing: 0.18em;
+}
+
+.section-divider {
+  background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
+  width: 72px;
+}
+
+/* ---- 本文の空気感 ---- */
+body {
+  letter-spacing: 0.02em;
+}
+
+.about-text h3 {
+  font-size: 1.75rem;
+  line-height: 1.65;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.8rem;
+}
+
+.about-text p {
+  font-size: 0.92rem;
+  line-height: 2.3;
+}
+
+.about-content {
+  gap: 5rem;
+}
+
+/* ---- 写真の奥行き ---- */
+.about-image {
+  box-shadow: 0 26px 60px rgba(58, 122, 148, 0.16);
+}
+
+.about-image::after {
+  border-color: var(--gold-accent);
+  opacity: 0.45;
+}
+
+.interior-grid {
+  gap: 1rem;
+}
+
+.interior-caption {
+  padding: 1.2rem 1.3rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  background: linear-gradient(transparent, rgba(20, 35, 45, 0.45));
+}
+
+/* ---- メニュー: 価格表の品格 ---- */
+.menu-item {
+  padding: 1.5rem 0.3rem;
+  transition: background 0.3s ease;
+}
+
+.menu-item:hover {
+  background: rgba(208, 232, 240, 0.18);
+}
+
+.menu-item-name {
+  letter-spacing: 0.08em;
+}
+
+.menu-item-price {
+  font-size: 1.25rem;
+}
+
+.menu-note {
+  margin-top: 2.6rem;
+  line-height: 2;
+}
+
+/* ---- レビュー: 星をブランドゴールドに統一 ---- */
+.review-stars {
+  color: var(--gold-accent);
+}
+
+.review-card {
+  padding: 2rem 1.9rem;
+  border-radius: 10px;
+}
+
+/* ---- ボタン: ゆとりのある文字間 ---- */
+.btn {
+  letter-spacing: 0.18em;
+  padding: 1.05rem 2.8rem;
+}
+
+/* ---- アクセス表 ---- */
+.access-info-item {
+  padding: 1.35rem 0;
+}
+
+.access-content {
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.access-map {
+  box-shadow: 0 20px 48px rgba(58, 122, 148, 0.12);
+  border-radius: 4px;
+}
+
+/* ---- コンタクト ---- */
+.contact {
+  padding: 8rem 2rem;
+}
+
+.contact h2 {
+  font-size: 2.3rem;
+  letter-spacing: 0.18em;
+}
+
+.contact p {
+  margin-bottom: 3rem;
+}
+
+/* ---- フッター ---- */
+.footer {
+  padding: 4.5rem 2rem 2rem;
+}
+
+/* ---- モバイル調整 ---- */
+@media (max-width: 768px) {
+  .section {
+    padding: 5.5rem 1.5rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-header {
+    margin-bottom: 3.2rem;
+  }
+
+  .about-content {
+    gap: 2.4rem;
+  }
+
+  .about-text h3 {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .contact {
+    padding: 6rem 1.5rem;
+  }
+
+  .gallery-instagram-feature {
+    padding: 2.8rem 1.4rem;
+  }
+}

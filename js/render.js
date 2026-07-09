@@ -137,11 +137,22 @@ function renderGallery(g) {
   const grid = document.querySelector('.gallery-grid');
   if (!grid) return;
 
-  grid.innerHTML = g.images.map(img => `
+  // 写真が登録されているものだけ表示（空のプレースホルダーは出さない）
+  const images = (g.images || []).filter(img => img.url);
+  const cta = document.querySelector('.gallery-instagram');
+
+  if (!images.length) {
+    // 写真ゼロ → グリッドは隠し、Instagram案内を主役として見せる
+    grid.style.display = 'none';
+    if (cta) cta.classList.add('gallery-instagram-feature');
+    return;
+  }
+
+  grid.style.display = '';
+  if (cta) cta.classList.remove('gallery-instagram-feature');
+  grid.innerHTML = images.map(img => `
     <div class="gallery-item">
-      ${img.url
-        ? `<img src="${escapeAttr(img.url)}" alt="${escapeAttr(img.label)}">`
-        : `<div class="gallery-placeholder">${escapeHtml(img.label)}</div>`}
+      <img src="${escapeAttr(img.url)}" alt="${escapeAttr(img.label)}">
     </div>
   `).join('');
 }
@@ -151,11 +162,18 @@ function renderInterior(int) {
   const grid = document.querySelector('.interior-grid');
   if (!grid) return;
 
-  grid.innerHTML = int.images.map((img, i) => `
+  // 写真が登録されているものだけ表示（空枠は出さない）
+  const images = (int.images || []).filter(img => img.url);
+  if (!images.length) {
+    toggleSection('#interior', false);
+    return;
+  }
+
+  // 枚数に応じてCSS側でレイアウトを最適化する
+  grid.dataset.count = Math.min(images.length, 5);
+  grid.innerHTML = images.map((img, i) => `
     <div class="interior-item">
-      ${img.url
-        ? `<img src="${escapeAttr(img.url)}" alt="${escapeAttr(img.label)}">`
-        : `<div class="interior-placeholder"><span>${escapeHtml(img.label)}</span></div>`}
+      <img src="${escapeAttr(img.url)}" alt="${escapeAttr(img.label)}">
       ${i === 0 ? `<div class="interior-caption">${escapeHtml(img.label)}</div>` : ''}
     </div>
   `).join('');
