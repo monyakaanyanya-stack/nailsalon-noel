@@ -3,13 +3,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const yearEl = document.getElementById('footer-year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // Navbar scroll effect + Floating LINE button
+  // Navbar scroll effect + Floating buttons (LINE / WEB予約)
   const navbar = document.querySelector('.navbar');
   const floatLineBtn = document.querySelector('.float-line-btn');
+  const floatReserveBtn = document.querySelector('.float-reserve-btn');
   window.addEventListener('scroll', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 50);
     if (floatLineBtn) {
       floatLineBtn.classList.toggle('visible', window.scrollY > 400);
+    }
+    if (floatReserveBtn) {
+      floatReserveBtn.classList.toggle('visible', window.scrollY > 400);
     }
   });
 
