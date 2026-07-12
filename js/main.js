@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // ---- Feature flags (js/site-config.js) ----
+  // WEB予約が無効なリポジトリ(public)では、予約フォームへの導線をすべて隠す。
+  const siteConfig = window.SITE_CONFIG || {};
+  if (siteConfig.webReserveEnabled === false) {
+    // フローティング予約ボタン / Contactのゴールドボタン / フッターのリンクを除去
+    document.querySelectorAll('.float-reserve-btn, .contact-buttons .btn-gold, .footer-links a[href="reserve.html"]')
+      .forEach(el => { const li = el.closest('li'); (li || el).remove(); });
+    // ナビの RESERVE は連絡先セクション(#contact)へ差し替え（ピル装飾も解除）
+    document.querySelectorAll('.nav-links a.nav-reserve, .nav-overlay-links a[href="reserve.html"]')
+      .forEach(a => { a.setAttribute('href', '#contact'); a.classList.remove('nav-reserve'); });
+  }
+
   // Copyright year
   const yearEl = document.getElementById('footer-year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
