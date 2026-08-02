@@ -171,6 +171,8 @@
   }
   .cal-day.selected .cal-hours { color: rgba(255,255,255,.8); }
   .cal-hours { font-size: 8px; font-weight: 400; color: var(--text-light); margin-top: 1px; }
+  .cal-nom { font-size: 8px; font-weight: 700; color: #e8a000; line-height: 1; }
+  .cal-day.selected .cal-nom { color: #ffe08a; }
   .cal-summary {
     display: flex; justify-content: space-between;
     margin-top: 14px; padding-top: 12px; border-top: 1.5px solid var(--border);
@@ -322,9 +324,10 @@
     <div class="cal-grid" id="calGrid"></div>
     <div class="cal-summary">
       <div><span class="cs-label">出勤日数: </span><span class="cs-value" id="calDays">0日</span></div>
+      <div><span class="cs-label">指名: </span><span class="cs-value" id="calNom">0人</span></div>
       <div><span class="cs-label">合計時間: </span><span class="cs-value" id="calHours">0h</span></div>
     </div>
-    <div class="hint" style="margin-top:6px">タップで出勤ON/OFF。長押しで時間変更。</div>
+    <div class="hint" style="margin-top:6px">タップで出勤ON/OFF。長押しで時間・指名数の変更。</div>
   </div>
 
   <div class="card">
@@ -461,6 +464,10 @@
           <option value="1.5">1.5h</option>
           <option value="2">2h</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label>指名数</label>
+        <select id="modalNomination"></select>
       </div>
     </div>
     <div style="text-align:center;font-size:13px;color:var(--text-light)">
@@ -607,12 +614,13 @@ function renderCalendar() {
     const selected = shift ? 'selected' : '';
     const dowCls = dow === 0 ? 'sun' : dow === 6 ? 'sat' : '';
     const label = shift ? `${shift.netH}h` : '';
+    const nomLabel = (shift && shift.nomination > 0) ? `<span class="cal-nom">★${shift.nomination}</span>` : '';
     html += `<div class="cal-day ${selected} ${dowCls}" data-date="${dateStr}"
       onpointerdown="onDayDown(event,'${dateStr}')"
       onpointerup="onDayUp(event,'${dateStr}')"
       onpointerleave="onDayLeave()"
       oncontextmenu="event.preventDefault()">
-      ${d}<span class="cal-hours">${label}</span></div>`;
+      ${d}<span class="cal-hours">${label}</span>${nomLabel}</div>`;
   }
   grid.innerHTML = html;
   updateCalSummary();
@@ -635,7 +643,9 @@ function updateCalSummary() {
   const dates = Object.keys(shiftData).filter(d => { const [y, m] = d.split('-').map(Number); return y === currentYear && m === currentMonth; });
   const days = dates.length;
   const hours = dates.reduce((s, d) => s + (shiftData[d]?.netH || 0), 0);
+  const nom = dates.reduce((s, d) => s + (shiftData[d]?.nomination || 0), 0);
   document.getElementById('calDays').textContent = `${days}日`;
+  document.getElementById('calNom').textContent = `${nom}人`;
   document.getElementById('calHours').textContent = `${hours}h`;
 }
 
@@ -648,6 +658,7 @@ function openModal(dateStr) {
   document.getElementById('modalStart').value = shift ? shift.start : DEFAULT_START;
   document.getElementById('modalEnd').value = shift ? shift.end : DEFAULT_END;
   document.getElementById('modalBreak').value = (shift && shift.breakManual !== null && shift.breakManual !== undefined) ? shift.breakManual : 'auto';
+  document.getElementById('modalNomination').value = (shift && shift.nomination) ? shift.nomination : 0;
   updateModalPreview();
   document.getElementById('timeModal').classList.add('show');
 }
@@ -657,8 +668,9 @@ function saveModal() {
   const end = document.getElementById('modalEnd').value;
   if (!start || !end) return;
   const brk = document.getElementById('modalBreak').value;
+  const nomination = parseInt(document.getElementById('modalNomination').value) || 0;
   const h = calcShiftHours(start, end, brk);
-  shiftData[editingDate] = { start, end, breakH: h.breakH, netH: h.netH, grossH: h.grossH, breakManual: h.breakManual };
+  shiftData[editingDate] = { start, end, breakH: h.breakH, netH: h.netH, grossH: h.grossH, breakManual: h.breakManual, nomination };
   closeModal(); renderCalendar();
 }
 function removeDay() { delete shiftData[editingDate]; closeModal(); renderCalendar(); }
@@ -673,6 +685,14 @@ function updateModalPreview() {
   }
 }
 document.addEventListener('DOMContentLoaded', () => {
+  // 指名数の選択肢（0〜20人）を生成
+  const nomSel = document.getElementById('modalNomination');
+  let opts = '';
+  for (let i = 0; i <= 20; i++) {
+    opts += `<option value="${i}">${i === 0 ? 'なし' : i + '人'}</option>`;
+  }
+  nomSel.innerHTML = opts;
+
   document.getElementById('modalStart').addEventListener('input', updateModalPreview);
   document.getElementById('modalEnd').addEventListener('input', updateModalPreview);
   document.getElementById('modalBreak').addEventListener('change', updateModalPreview);
@@ -724,7 +744,10 @@ function calculate() {
   const overtime = parseFloat(document.getElementById('overtime').value) || 0;
   const nightHours = parseFloat(document.getElementById('nightHours').value) || 0;
   const nominationRate = parseFloat(document.getElementById('nominationRate').value) || 0;
-  const nominationCount = parseInt(document.getElementById('nominationCount').value) || 0;
+  // カレンダーの日別指名数を合計。1件でも入っていればそれを採用し、入力欄にも反映する
+  const calNomination = dates.reduce((s, d) => s + (shiftData[d]?.nomination || 0), 0);
+  if (calNomination > 0) document.getElementById('nominationCount').value = calNomination;
+  const nominationCount = calNomination > 0 ? calNomination : (parseInt(document.getElementById('nominationCount').value) || 0);
   const transport = parseFloat(document.getElementById('transport').value) || 0;
 
   const basePay = Math.round(hours * rate);
