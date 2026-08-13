@@ -193,6 +193,14 @@
     width: 300px; max-width: 90vw;
   }
   .modal h3 { font-size: 16px; margin-bottom: 16px; text-align: center; }
+  /* modal-content: 履歴詳細・一覧入力・一括結果で使う可変幅モーダル */
+  .modal-content {
+    background: #fff; border-radius: 16px; padding: 20px;
+    width: 340px; max-width: calc(100vw - 24px);
+  }
+  .modal-title {
+    font-size: 16px; font-weight: 700; margin-bottom: 14px; text-align: center;
+  }
   .modal .form-row { margin-bottom: 12px; }
   .modal-btns { display: flex; gap: 8px; margin-top: 16px; }
   .modal-btns button {
@@ -216,8 +224,89 @@
   }
   .default-time-row .dt-sep { color: var(--text-light); }
 
+  /* 曜日一括 / クイック操作 */
+  .dow-picker-label { font-size: 12px; color: var(--text-light); margin-bottom: 5px; }
+  .dow-picker { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 12px; }
+  .dow-btn {
+    padding: 7px 0; border: 1px solid var(--border); background: #fff;
+    border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer;
+    color: var(--text);
+  }
+  .dow-btn.sun { color: #e00; }
+  .dow-btn.sat { color: #00c; }
+  .dow-btn.on { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .quick-actions { display: flex; gap: 6px; margin-top: 12px; }
+  .qa-btn {
+    flex: 1; padding: 9px 4px; border: 1.5px solid var(--primary);
+    background: #fff; color: var(--primary); border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .qa-btn:active { background: #eef2ff; }
+  .qa-btn.qa-danger { border-color: var(--danger); color: var(--danger); }
+  .qa-btn.qa-danger:active { background: #ffeaea; }
+
+  /* 一覧入力 */
+  .list-entry-modal { max-height: 86vh; display: flex; flex-direction: column; width: 100%; }
+  .le-head, .le-row {
+    display: grid; grid-template-columns: 58px 44px minmax(0, 1fr) 54px;
+    align-items: center; gap: 4px;
+  }
+  .le-head {
+    font-size: 11px; color: var(--text-light); font-weight: 600;
+    padding: 0 2px 6px; border-bottom: 1px solid var(--border);
+  }
+  .le-head .le-c-on, .le-head .le-c-nom { text-align: center; }
+  .le-body { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+  .le-row { padding: 5px 2px; border-bottom: 1px solid #f0f0f0; }
+  .le-row.off { opacity: .45; }
+  .le-row.today { background: #fffbe6; }
+  .le-date { font-size: 12px; font-weight: 600; }
+  .le-date.sun { color: #e00; }
+  .le-date.sat { color: #00c; }
+  .le-toggle {
+    width: 40px; height: 26px; border-radius: 13px; border: none;
+    background: #d8d8d8; cursor: pointer; position: relative; margin: 0 auto; display: block;
+  }
+  .le-toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; border-radius: 50%; background: #fff;
+    transition: transform .15s;
+  }
+  .le-toggle.on { background: var(--primary); }
+  .le-toggle.on::after { transform: translateX(14px); }
+  .le-times { display: flex; align-items: center; gap: 2px; min-width: 0; }
+  .le-times input[type="time"] {
+    flex: 1 1 0; min-width: 0; width: 100%; padding: 5px 0; border: 1px solid var(--border);
+    border-radius: 6px; font-size: 11px; text-align: center;
+  }
+  .le-times span { color: var(--text-light); font-size: 10px; flex: 0 0 auto; }
+  .le-nom {
+    width: 100%; min-width: 0; padding: 6px 0; border: 1px solid var(--border);
+    border-radius: 6px; font-size: 14px; text-align: center;
+  }
+  .le-footer {
+    padding-top: 8px; border-top: 1px solid var(--border); margin-top: 4px;
+    font-size: 13px; font-weight: 600; display: flex; justify-content: space-around;
+  }
+  .le-footer .lef-v { color: var(--primary); }
+
   /* スタッフ */
   .staff-section { margin-top: 24px; }
+  .staff-bulk-btn {
+    width: 100%; padding: 11px; background: #fff; color: var(--primary);
+    border: 1.5px solid var(--primary); border-radius: 8px;
+    font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px;
+  }
+  .staff-bulk-btn:active { background: #eef2ff; }
+  .bulk-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+  .bulk-row:last-child { border-bottom: none; }
+  .bulk-row .bk-name { font-weight: 600; }
+  .bulk-row .bk-meta { font-size: 11.5px; color: var(--text-light); margin-top: 2px; }
+  .bulk-row .bk-amount { font-weight: 700; color: var(--primary); white-space: nowrap; margin-left: 10px; }
+  .bulk-row.skipped .bk-amount { color: var(--text-light); font-weight: 600; }
   .staff-item {
     display: flex; justify-content: space-between; align-items: center;
     padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px;
@@ -321,6 +410,10 @@
       <input type="time" id="defaultEnd" value="20:00" onchange="updateDefaultTime()">
     </div>
     <div class="hint" style="margin:-4px 0 12px">タップで入る時間です。スタッフ保存で記憶されます。</div>
+
+    <div class="dow-picker-label">曜日でまとめて出勤ON/OFF</div>
+    <div class="dow-picker" id="dowPicker"></div>
+
     <div class="cal-grid" id="calGrid"></div>
     <div class="cal-summary">
       <div><span class="cs-label">出勤日数: </span><span class="cs-value" id="calDays">0日</span></div>
@@ -328,6 +421,12 @@
       <div><span class="cs-label">合計時間: </span><span class="cs-value" id="calHours">0h</span></div>
     </div>
     <div class="hint" style="margin-top:6px">タップで出勤ON/OFF。長押しで時間・指名数の変更。</div>
+
+    <div class="quick-actions">
+      <button class="qa-btn" onclick="openListEntry()">一覧入力</button>
+      <button class="qa-btn" onclick="copyLastMonth()">先月をコピー</button>
+      <button class="qa-btn qa-danger" onclick="clearMonthShifts()">今月をクリア</button>
+    </div>
   </div>
 
   <div class="card">
@@ -425,9 +524,10 @@
   <div class="staff-section">
     <div class="card">
       <div class="card-title">スタッフ</div>
-      <div class="hint" style="margin-bottom:10px">登録済みをタップすると固定情報が入力欄に入ります（出勤日数・指名数・残業/深夜はリセット）。</div>
+      <div class="hint" style="margin-bottom:10px">登録済みをタップすると固定情報＋その人の出勤カレンダーが復元されます。</div>
       <div id="staffBody"></div>
       <button class="staff-save-btn" onclick="saveStaff()">現在の入力をスタッフとして保存</button>
+      <button class="staff-bulk-btn" onclick="bulkCalculate()">全スタッフを一括計算（今月分）</button>
     </div>
   </div>
 
@@ -494,6 +594,36 @@
   </div>
 </div>
 
+<!-- 一覧入力モーダル -->
+<div class="modal-overlay" id="listEntryModal">
+  <div class="modal-content list-entry-modal">
+    <div class="modal-title" id="listEntryTitle">一覧入力</div>
+    <div class="hint" style="margin-bottom:8px">出勤の日をONにして、指名数を上から入れていけます。</div>
+    <div class="le-head">
+      <span class="le-c-date">日付</span>
+      <span class="le-c-on">出勤</span>
+      <span class="le-c-time">時間</span>
+      <span class="le-c-nom">指名</span>
+    </div>
+    <div id="listEntryBody" class="le-body"></div>
+    <div class="le-footer" id="listEntryFooter"></div>
+    <div class="modal-btns" style="margin-top:10px">
+      <button class="btn-cancel" onclick="closeListEntry()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- 一括計算結果モーダル -->
+<div class="modal-overlay" id="bulkModal">
+  <div class="modal-content" style="max-height:80vh;overflow-y:auto">
+    <div class="modal-title" id="bulkTitle">一括計算結果</div>
+    <div id="bulkBody"></div>
+    <div class="modal-btns" style="margin-top:12px">
+      <button class="btn-cancel" onclick="closeBulk()">閉じる</button>
+    </div>
+  </div>
+</div>
+
 <!-- PDF用レンダリング領域 -->
 <div id="payslipRender"></div>
 
@@ -507,6 +637,8 @@ let employmentType = 'parttime';
 let taxColumn = 'kou';
 let taxTable = null;
 let shiftData = {};
+// 現在フォームで扱っているスタッフのキー（未登録の作業中は '_unsaved'）
+let currentStaffKey = '_unsaved';
 let editingDate = null;
 let longPressTimer = null;
 
@@ -529,6 +661,7 @@ function updateDefaultTime() {
   renderCalendar();
   await initHistory();
   await initStaff();
+  await initShifts();
   await loadTaxTable();
 })();
 
@@ -636,6 +769,7 @@ function toggleDay(dateStr) {
     const h = calcShiftHours(DEFAULT_START, DEFAULT_END);
     shiftData[dateStr] = { start: DEFAULT_START, end: DEFAULT_END, breakH: h.breakH, netH: h.netH, grossH: h.grossH };
   }
+  persistShifts();
   renderCalendar();
 }
 
@@ -647,7 +781,224 @@ function updateCalSummary() {
   document.getElementById('calDays').textContent = `${days}日`;
   document.getElementById('calNom').textContent = `${nom}人`;
   document.getElementById('calHours').textContent = `${hours}h`;
+  renderDowPicker();
 }
+
+// --- 曜日でまとめて選択 ---
+function monthDates(year, month) {
+  const lastDate = new Date(year, month, 0).getDate();
+  const out = [];
+  for (let d = 1; d <= lastDate; d++) {
+    out.push({
+      day: d,
+      dateStr: `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`,
+      dow: new Date(year, month - 1, d).getDay(),
+    });
+  }
+  return out;
+}
+function makeShift(start, end, breakVal, nomination) {
+  const h = calcShiftHours(start, end, breakVal);
+  return { start, end, breakH: h.breakH, netH: h.netH, grossH: h.grossH,
+           breakManual: h.breakManual, nomination: nomination || 0 };
+}
+function renderDowPicker() {
+  const el = document.getElementById('dowPicker');
+  if (!el) return;
+  const all = monthDates(currentYear, currentMonth);
+  let html = '';
+  DOW_NAMES.forEach((nm, dow) => {
+    const targets = all.filter(x => x.dow === dow);
+    const allOn = targets.length > 0 && targets.every(x => shiftData[x.dateStr]);
+    const cls = dow === 0 ? 'sun' : dow === 6 ? 'sat' : '';
+    html += `<button class="dow-btn ${cls} ${allOn ? 'on' : ''}" onclick="toggleDow(${dow})">${nm}</button>`;
+  });
+  el.innerHTML = html;
+}
+function toggleDow(dow) {
+  const targets = monthDates(currentYear, currentMonth).filter(x => x.dow === dow);
+  const allOn = targets.every(x => shiftData[x.dateStr]);
+  targets.forEach(x => {
+    if (allOn) delete shiftData[x.dateStr];
+    else if (!shiftData[x.dateStr]) shiftData[x.dateStr] = makeShift(DEFAULT_START, DEFAULT_END, 'auto', 0);
+  });
+  persistShifts();
+  renderCalendar();
+}
+
+// --- 先月をコピー（曜日パターンを保って複製。指名数はコピーしない） ---
+function copyLastMonth() {
+  let py = currentYear, pm = currentMonth - 1;
+  if (pm === 0) { pm = 12; py -= 1; }
+
+  const prev = monthDates(py, pm).filter(x => shiftData[x.dateStr]);
+  if (!prev.length) { alert(`${py}年${pm}月に出勤データがありません。`); return; }
+
+  const cur = monthDates(currentYear, currentMonth);
+  const plan = [];
+  prev.forEach(x => {
+    const weekIdx = Math.floor((x.day - 1) / 7);          // 第何週の
+    const t = cur.find(c => c.dow === x.dow && Math.floor((c.day - 1) / 7) === weekIdx); // 同じ曜日
+    if (t) plan.push({ from: x.dateStr, to: t.dateStr });
+  });
+  if (!plan.length) { alert('コピーできる日が見つかりませんでした。'); return; }
+
+  const already = plan.filter(p => shiftData[p.to]).length;
+  const msg = `${py}年${pm}月の出勤 ${prev.length}日分を、曜日をそろえて${currentMonth}月に${plan.length}日コピーします。\n`
+            + (already ? `※既に入力済みの ${already}日 は上書きされます。\n` : '')
+            + `※指名数はコピーされません（0で入ります）。`;
+  if (!confirm(msg)) return;
+
+  plan.forEach(p => {
+    const src = shiftData[p.from];
+    shiftData[p.to] = makeShift(src.start, src.end,
+      (src.breakManual === null || src.breakManual === undefined) ? 'auto' : src.breakManual, 0);
+  });
+  persistShifts();
+  renderCalendar();
+}
+
+// --- 今月をクリア ---
+function clearMonthShifts() {
+  const targets = monthDates(currentYear, currentMonth).filter(x => shiftData[x.dateStr]);
+  if (!targets.length) { alert('今月の出勤データはありません。'); return; }
+  if (!confirm(`${currentMonth}月の出勤データ ${targets.length}日分を削除しますか？`)) return;
+  targets.forEach(x => delete shiftData[x.dateStr]);
+  persistShifts();
+  renderCalendar();
+}
+
+// --- 一覧入力 ---
+function openListEntry() {
+  document.getElementById('listEntryTitle').textContent = `${currentYear}年${currentMonth}月 一覧入力`;
+  renderListEntry();
+  document.getElementById('listEntryModal').classList.add('show');
+}
+function closeListEntry() {
+  document.getElementById('listEntryModal').classList.remove('show');
+  renderCalendar();
+}
+function renderListEntry() {
+  const body = document.getElementById('listEntryBody');
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  let html = '';
+  monthDates(currentYear, currentMonth).forEach(x => {
+    const sh = shiftData[x.dateStr];
+    const on = !!sh;
+    const dowCls = x.dow === 0 ? 'sun' : x.dow === 6 ? 'sat' : '';
+    html += `<div class="le-row ${on ? '' : 'off'} ${x.dateStr === todayStr ? 'today' : ''}">
+      <span class="le-date ${dowCls}">${x.day}日(${DOW_NAMES[x.dow]})</span>
+      <button class="le-toggle ${on ? 'on' : ''}" onclick="leToggle('${x.dateStr}')"></button>
+      <span class="le-times">
+        <input type="time" value="${on ? sh.start : DEFAULT_START}" ${on ? '' : 'disabled'} onchange="leTime('${x.dateStr}','start',this.value)">
+        <span>〜</span>
+        <input type="time" value="${on ? sh.end : DEFAULT_END}" ${on ? '' : 'disabled'} onchange="leTime('${x.dateStr}','end',this.value)">
+      </span>
+      <input class="le-nom" type="number" inputmode="numeric" min="0" value="${on && sh.nomination ? sh.nomination : 0}" ${on ? '' : 'disabled'} onchange="leNom('${x.dateStr}',this.value)" onfocus="this.select()">
+    </div>`;
+  });
+  body.innerHTML = html;
+  updateListFooter();
+}
+function updateListFooter() {
+  const s = summarizeShifts(shiftData, currentYear, currentMonth);
+  document.getElementById('listEntryFooter').innerHTML =
+    `<span>出勤 <span class="lef-v">${s.days}日</span></span>`
+  + `<span>実働 <span class="lef-v">${s.hours}h</span></span>`
+  + `<span>指名 <span class="lef-v">${s.nomination}人</span></span>`;
+}
+function leToggle(dateStr) {
+  if (shiftData[dateStr]) delete shiftData[dateStr];
+  else shiftData[dateStr] = makeShift(DEFAULT_START, DEFAULT_END, 'auto', 0);
+  persistShifts();
+  renderListEntry();
+}
+function leTime(dateStr, which, val) {
+  const sh = shiftData[dateStr];
+  if (!sh || !val) return;
+  const start = which === 'start' ? val : sh.start;
+  const end = which === 'end' ? val : sh.end;
+  shiftData[dateStr] = makeShift(start, end,
+    (sh.breakManual === null || sh.breakManual === undefined) ? 'auto' : sh.breakManual, sh.nomination);
+  persistShifts();
+  renderListEntry();
+}
+function leNom(dateStr, val) {
+  const sh = shiftData[dateStr];
+  if (!sh) return;
+  sh.nomination = Math.max(0, parseInt(val) || 0);
+  persistShifts();
+  updateListFooter();
+}
+
+// --- 全スタッフ一括計算 ---
+function bulkCalculate() {
+  if (!taxTable) { alert('税額表を読み込み中です。'); return; }
+  const list = getStaff();
+  if (!list.length) { alert('スタッフが登録されていません。'); return; }
+
+  // 画面で編集中の内容を確実に反映してから集計
+  persistShifts();
+
+  if (!confirm(`登録スタッフ ${list.length}名の ${currentYear}年${currentMonth}月分を計算し、履歴に保存します。よろしいですか？`)) return;
+
+  const results = [];
+  list.forEach(s => {
+    const shifts = shiftStore[String(s.id)] || {};
+    const sum = summarizeShifts(shifts, currentYear, currentMonth);
+    if (sum.days === 0) { results.push({ staff: s, skipped: true }); return; }
+
+    const r = computePayroll({
+      hours: sum.hours, rate: s.rate || 0,
+      overtime: 0, nightHours: 0,
+      nominationRate: s.nominationRate || 0, nominationCount: sum.nomination,
+      transport: s.transport || 0,
+      type: s.type || 'parttime', taxColumn: s.taxColumn || 'kou',
+      healthIns: s.healthIns || 0, pension: s.pension || 0,
+      employmentIns: s.employmentIns || 0, dependents: s.dependents || 0,
+    });
+
+    const rec = {
+      name: s.name, staffId: s.staffId || '1',
+      year: currentYear, month: currentMonth,
+      type: s.type || 'parttime', taxColumn: s.taxColumn || 'kou', taxColLabel: r.taxColLabel,
+      days: sum.days, hours: sum.hours, rate: s.rate || 0,
+      overtime: 0, overtimePay: 0, nightHours: 0, nightPay: 0,
+      nominationRate: s.nominationRate || 0, nominationCount: sum.nomination, nominationPay: r.nominationPay,
+      basePay: r.basePay, transport: s.transport || 0, grossPay: r.grossPay,
+      healthIns: r.healthIns, pension: r.pension, employmentIns: r.employmentIns, socialIns: r.socialIns,
+      dependents: r.dependents, taxableAmount: r.taxableAmount, withholding: r.withholding, netPay: r.netPay,
+    };
+    saveHistory(rec);
+    results.push({ staff: s, rec, sum });
+  });
+
+  showBulkResult(results);
+}
+function showBulkResult(results) {
+  const done = results.filter(r => !r.skipped);
+  const skipped = results.filter(r => r.skipped);
+  let html = '';
+  done.forEach(r => {
+    html += `<div class="bulk-row"><div><div class="bk-name">${esc(r.staff.name)}</div>`
+         + `<div class="bk-meta">${r.sum.days}日 / ${r.sum.hours}h / 指名${r.sum.nomination}人</div></div>`
+         + `<div class="bk-amount">${formatYen(r.rec.netPay)}</div></div>`;
+  });
+  skipped.forEach(r => {
+    html += `<div class="bulk-row skipped"><div><div class="bk-name">${esc(r.staff.name)}</div>`
+         + `<div class="bk-meta">出勤データなし</div></div><div class="bk-amount">スキップ</div></div>`;
+  });
+  const total = done.reduce((s, r) => s + r.rec.netPay, 0);
+  html += `<div class="result-total" style="margin-top:10px"><span>${done.length}名の手取り合計</span>`
+       + `<span class="value">${formatYen(total)}</span></div>`;
+  if (done.length) html += `<div class="hint" style="margin-top:8px">履歴に保存しました。個別のPDFは履歴から開いて出せます。</div>`;
+
+  document.getElementById('bulkTitle').textContent = `${currentYear}年${currentMonth}月 一括計算`;
+  document.getElementById('bulkBody').innerHTML = html;
+  document.getElementById('bulkModal').classList.add('show');
+}
+function closeBulk() { document.getElementById('bulkModal').classList.remove('show'); }
 
 // --- モーダル ---
 function openModal(dateStr) {
@@ -671,9 +1022,10 @@ function saveModal() {
   const nomination = parseInt(document.getElementById('modalNomination').value) || 0;
   const h = calcShiftHours(start, end, brk);
   shiftData[editingDate] = { start, end, breakH: h.breakH, netH: h.netH, grossH: h.grossH, breakManual: h.breakManual, nomination };
+  persistShifts();
   closeModal(); renderCalendar();
 }
-function removeDay() { delete shiftData[editingDate]; closeModal(); renderCalendar(); }
+function removeDay() { delete shiftData[editingDate]; persistShifts(); closeModal(); renderCalendar(); }
 function updateModalPreview() {
   const start = document.getElementById('modalStart').value;
   const end = document.getElementById('modalEnd').value;
@@ -732,12 +1084,51 @@ function calcOtsu(amount) {
 }
 
 // --- 計算 ---
+// 指定シフトの当月分を集計（日数・実働時間・指名数）
+function summarizeShifts(shifts, year, month) {
+  const dates = Object.keys(shifts || {}).filter(d => {
+    const [y, m] = d.split('-').map(Number); return y === year && m === month;
+  });
+  return {
+    days: dates.length,
+    hours: dates.reduce((s, d) => s + (shifts[d]?.netH || 0), 0),
+    nomination: dates.reduce((s, d) => s + (shifts[d]?.nomination || 0), 0),
+  };
+}
+
+// 給与計算の本体（DOMに依存しない純粋関数。単発計算と一括計算で共用）
+function computePayroll(p) {
+  const basePay = Math.round(p.hours * p.rate);
+  const overtimePay = Math.round(p.overtime * p.rate * 1.25);
+  const nightPay = Math.round(p.nightHours * p.rate * 0.25);
+  const nominationPay = Math.round(p.nominationRate * p.nominationCount);
+  const grossPay = basePay + overtimePay + nightPay + nominationPay + p.transport;
+
+  let healthIns = 0, pension = 0, employmentIns = 0, dependents = 0, socialIns = 0;
+  if (p.type === 'fulltime') {
+    healthIns = p.healthIns; pension = p.pension; employmentIns = p.employmentIns;
+    dependents = p.dependents;
+    socialIns = healthIns + pension + employmentIns;
+  }
+
+  const taxableAmount = grossPay - p.transport - socialIns;
+  const withholding = calcWithholding(taxableAmount, dependents, p.taxColumn);
+  const netPay = grossPay - socialIns - withholding;
+
+  return {
+    basePay, overtimePay, nightPay, nominationPay, grossPay,
+    healthIns, pension, employmentIns, socialIns, dependents,
+    taxableAmount, withholding, netPay,
+    taxColLabel: p.taxColumn === 'kou' ? '甲欄' : '乙欄',
+  };
+}
+
 function calculate() {
   if (!taxTable) { alert('税額表を読み込み中です。'); return; }
 
-  const dates = Object.keys(shiftData).filter(d => { const [y, m] = d.split('-').map(Number); return y === currentYear && m === currentMonth; });
-  const days = dates.length;
-  const hours = dates.reduce((s, d) => s + (shiftData[d]?.netH || 0), 0);
+  const sum = summarizeShifts(shiftData, currentYear, currentMonth);
+  const days = sum.days;
+  const hours = sum.hours;
 
   const name = document.getElementById('name').value || '未入力';
   const rate = parseFloat(document.getElementById('hourlyRate').value) || 0;
@@ -745,30 +1136,22 @@ function calculate() {
   const nightHours = parseFloat(document.getElementById('nightHours').value) || 0;
   const nominationRate = parseFloat(document.getElementById('nominationRate').value) || 0;
   // カレンダーの日別指名数を合計。1件でも入っていればそれを採用し、入力欄にも反映する
-  const calNomination = dates.reduce((s, d) => s + (shiftData[d]?.nomination || 0), 0);
+  const calNomination = sum.nomination;
   if (calNomination > 0) document.getElementById('nominationCount').value = calNomination;
   const nominationCount = calNomination > 0 ? calNomination : (parseInt(document.getElementById('nominationCount').value) || 0);
   const transport = parseFloat(document.getElementById('transport').value) || 0;
 
-  const basePay = Math.round(hours * rate);
-  const overtimePay = Math.round(overtime * rate * 1.25);
-  const nightPay = Math.round(nightHours * rate * 0.25);
-  const nominationPay = Math.round(nominationRate * nominationCount);
-  let grossPay = basePay + overtimePay + nightPay + nominationPay + transport;
-
-  let healthIns = 0, pension = 0, employmentIns = 0, dependents = 0, socialIns = 0;
-  if (employmentType === 'fulltime') {
-    healthIns = parseFloat(document.getElementById('healthIns').value) || 0;
-    pension = parseFloat(document.getElementById('pension').value) || 0;
-    employmentIns = parseFloat(document.getElementById('employmentIns').value) || 0;
-    dependents = parseInt(document.getElementById('dependents').value) || 0;
-    socialIns = healthIns + pension + employmentIns;
-  }
-
-  const taxableAmount = grossPay - transport - socialIns;
-  const withholding = calcWithholding(taxableAmount, dependents, taxColumn);
-  const netPay = grossPay - socialIns - withholding;
-  const taxColLabel = taxColumn === 'kou' ? '甲欄' : '乙欄';
+  const r = computePayroll({
+    hours, rate, overtime, nightHours, nominationRate, nominationCount, transport,
+    type: employmentType, taxColumn,
+    healthIns: parseFloat(document.getElementById('healthIns').value) || 0,
+    pension: parseFloat(document.getElementById('pension').value) || 0,
+    employmentIns: parseFloat(document.getElementById('employmentIns').value) || 0,
+    dependents: parseInt(document.getElementById('dependents').value) || 0,
+  });
+  const { basePay, overtimePay, nightPay, nominationPay, grossPay,
+          healthIns, pension, employmentIns, socialIns, dependents,
+          taxableAmount, withholding, netPay, taxColLabel } = r;
 
   let html = '';
   html += resultRow('名前', name);
@@ -943,6 +1326,59 @@ async function initStaff() {
 
 function persistStaff(list) { setStaffLS(list); idbSetStaff(list); renderStaff(); }
 
+// --- 出勤カレンダーのスタッフ別保存 ---
+// 形: { [staffKey]: { 'YYYY-MM-DD': {...shift} } }
+const SHIFT_KEY = 'payroll_shifts';
+let shiftStore = {};
+
+async function idbGetShifts() {
+  try {
+    const db = await openIDB();
+    return new Promise((resolve) => {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const req = tx.objectStore(IDB_STORE).get(SHIFT_KEY);
+      req.onsuccess = () => resolve(req.result || {});
+      req.onerror = () => resolve({});
+    });
+  } catch { return {}; }
+}
+async function idbSetShifts(data) {
+  try {
+    const db = await openIDB();
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put(data, SHIFT_KEY);
+  } catch {}
+}
+function getShiftsLS() { try { return JSON.parse(localStorage.getItem(SHIFT_KEY) || '{}'); } catch { return {}; } }
+function setShiftsLS(s) { try { localStorage.setItem(SHIFT_KEY, JSON.stringify(s)); } catch {} }
+
+async function initShifts() {
+  const ls = getShiftsLS();
+  const idb = await idbGetShifts();
+  const lsCount = Object.keys(ls).length, idbCount = Object.keys(idb).length;
+  if (idbCount > lsCount) { shiftStore = idb; setShiftsLS(idb); }
+  else { shiftStore = ls; if (lsCount > idbCount) await idbSetShifts(ls); }
+  // 現在のスタッフ分をカレンダーへ復元
+  shiftData = shiftStore[currentStaffKey] ? JSON.parse(JSON.stringify(shiftStore[currentStaffKey])) : {};
+  renderCalendar();
+}
+
+// カレンダーを変更したら必ず呼ぶ（現在のスタッフ枠へ保存）
+function persistShifts() {
+  shiftStore[currentStaffKey] = shiftData;
+  setShiftsLS(shiftStore);
+  idbSetShifts(shiftStore);
+}
+
+// スタッフ切替時：今の内容を退避し、切替先の内容を読み込む
+function switchStaffShifts(newKey) {
+  shiftStore[currentStaffKey] = shiftData;
+  currentStaffKey = newKey;
+  shiftData = shiftStore[newKey] ? JSON.parse(JSON.stringify(shiftStore[newKey])) : {};
+  setShiftsLS(shiftStore);
+  idbSetShifts(shiftStore);
+}
+
 function saveStaff() {
   const name = (document.getElementById('name').value || '').trim();
   if (!name) { alert('先に名前を入力してください。'); return; }
@@ -974,6 +1410,22 @@ function saveStaff() {
     list.push(staff);
   }
   persistStaff(list);
+
+  const key = String(staff.id);
+  if (currentStaffKey === key) {
+    // 同じ人を上書き保存：今のカレンダーをそのまま保存
+    persistShifts();
+  } else if (currentStaffKey === '_unsaved') {
+    // 未登録の状態で作ったカレンダーを、この人のものとして引き継ぐ
+    delete shiftStore['_unsaved'];
+    currentStaffKey = key;
+    persistShifts();
+  } else {
+    // 別の登録済みスタッフを表示中だった：その人のデータは触らず、この人へ切替
+    switchStaffShifts(key);
+    renderCalendar();
+  }
+  alert(`「${name}」を保存しました。`);
 }
 
 function deleteStaff(id) {
@@ -981,6 +1433,14 @@ function deleteStaff(id) {
   const s = list.find(x => x.id === id);
   if (s && !confirm(`「${s.name}」を削除しますか？`)) return;
   persistStaff(list.filter(x => x.id !== id));
+  // そのスタッフの出勤データも削除
+  delete shiftStore[String(id)];
+  setShiftsLS(shiftStore); idbSetShifts(shiftStore);
+  if (currentStaffKey === String(id)) {
+    currentStaffKey = '_unsaved';
+    shiftData = {};
+    renderCalendar();
+  }
 }
 
 function renderStaff() {
@@ -1038,7 +1498,9 @@ function loadStaff(id) {
   document.getElementById('overtime').value = 0;
   document.getElementById('nightHours').value = 0;
   document.getElementById('nominationCount').value = 0;
-  shiftData = {};
+
+  // この人の出勤カレンダーへ切替（保存済みなら復元）
+  switchStaffShifts(String(s.id));
   renderCalendar();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
