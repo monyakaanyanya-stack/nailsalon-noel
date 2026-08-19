@@ -93,7 +93,8 @@ function renderStaff(s) {
           : '<div class="staff-photo-placeholder">PHOTO</div>'}
       </div>
       <h3 class="staff-name">${escapeHtml(m.name)}</h3>
-      <p class="staff-role">${escapeHtml(m.role)}</p>
+      ${m.role ? `<p class="staff-role">${escapeHtml(m.role)}</p>` : ''}
+      ${m.fee ? `<p class="staff-fee">${escapeHtml(m.fee)}</p>` : ''}
       <p class="staff-desc">${escapeHtml(m.desc)}</p>
       <p class="staff-designs-btn">
         作品を見る${designCount > 0 ? ` <span class="staff-designs-count">(${designCount}枚)</span>` : ''}
@@ -126,10 +127,35 @@ function renderMenu(m) {
     </div>
   `).join('');
 
+  renderNomination(m.nomination);
+
   const noteEl = document.querySelector('.menu-note');
   if (noteEl) noteEl.innerHTML = m.note.replace(/\n/g, '<br>');
 
   rebindMenuTabs();
+}
+
+function renderNomination(nom) {
+  const wrap = document.querySelector('.menu-nomination');
+  if (!wrap) return;
+  if (!nom || !(nom.items || []).length) { wrap.style.display = 'none'; return; }
+
+  wrap.style.display = '';
+  wrap.innerHTML = `
+    <p class="nomination-title">${escapeHtml(nom.title || '指名料')}</p>
+    <div class="nomination-list">
+      ${nom.items.map(item => `
+        <div class="nomination-item">
+          <div class="nomination-item-info">
+            <p class="nomination-item-name">${escapeHtml(item.name)}</p>
+            ${item.desc ? `<p class="nomination-item-desc">${escapeHtml(item.desc)}</p>` : ''}
+          </div>
+          <p class="nomination-item-price">${escapeHtml(item.price)}</p>
+        </div>
+      `).join('')}
+    </div>
+    ${nom.note ? `<p class="nomination-note">${escapeHtml(nom.note)}</p>` : ''}
+  `;
 }
 
 function renderGallery(g) {

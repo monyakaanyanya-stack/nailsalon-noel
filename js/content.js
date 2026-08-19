@@ -1,8 +1,8 @@
 const STORAGE_KEY = 'noel_site_content';
-const CONTENT_VERSION = 5;
+const CONTENT_VERSION = 6;
 
 const DEFAULT_CONTENT = {
-  _v: 5,
+  _v: 6,
   hero: {
     subtitleTop: 'YOKOHAMA NAIL SALON',
     title: 'Noël',
@@ -50,21 +50,61 @@ const DEFAULT_CONTENT = {
       {
         name: 'なぎさ',
         role: '店長 / Nail Artist',
+        fee: '指名料 ¥1,000',
         desc: 'ネイリスト歴10年のオーナー店長。お客様の「推し」への想いを丁寧にヒアリングし、細部まで妥協しない痛ネイル・キャラクターネイルに仕上げます。パラジェル・フィルイン施術にも対応し、爪の健康も大切にした施術を心がけています。',
         photoUrl: 'images/staff/nagisa.jpg',
-        designs: []
+        designs: [
+          { url: 'images/staff/designs/nagisa-1.jpg', label: 'ニュアンスアート' },
+          { url: 'images/staff/designs/nagisa-2.jpg', label: '3Dアート' },
+          { url: 'images/staff/designs/nagisa-3.jpg', label: 'オーダーチップ' },
+          { url: 'images/staff/designs/nagisa-4.jpg', label: '痛ネイル' },
+          { url: 'images/staff/designs/nagisa-5.jpg', label: 'キャラクター1本' },
+          { url: 'images/staff/designs/nagisa-6.jpg', label: 'キャラクターネイル' }
+        ]
       },
       {
         name: 'くれか',
         role: 'Nail Artist',
+        fee: '指名料 ¥1,000',
         desc: 'ネイリスト歴6年。3Dネイルを得意とし、立体感あふれるアートで推しをより生き生きと表現します。繊細なパーツワークや複雑なデザインもお任せください。',
         photoUrl: 'images/staff/kureka.jpg',
-        designs: []
+        designs: [
+          { url: 'images/staff/designs/kureka-1.jpg', label: '3Dフラワー' },
+          { url: 'images/staff/designs/kureka-2.jpg', label: '定額デザイン' },
+          { url: 'images/staff/designs/kureka-3.jpg', label: '3Dアート' },
+          { url: 'images/staff/designs/kureka-4.jpg', label: '痛ネイル' },
+          { url: 'images/staff/designs/kureka-5.jpg', label: 'ワンカラー×グリッター' },
+          { url: 'images/staff/designs/kureka-6.jpg', label: 'シンプルネイル' }
+        ]
+      },
+      {
+        name: 'Nuts（ナツ）',
+        role: '',
+        fee: '指名料 ¥500（オーダー指名）',
+        desc: 'アニメ・ゲームのキャラクターを繊細に描き込んだオーダーチップを制作します。ご自宅で好きなときに楽しめる、あなただけの推しチップをお届けします。※店舗での施術は行っておらず、ネイルチップのオーダーのみの受付となります。',
+        photoUrl: 'images/staff/nuts.jpg',
+        designs: [
+          { url: 'images/staff/designs/nuts-1.jpg', label: 'キャラクターチップ' },
+          { url: 'images/staff/designs/nuts-2.jpg', label: 'キャラクターチップ' },
+          { url: 'images/staff/designs/nuts-3.jpg', label: 'キャラクター×3D' },
+          { url: 'images/staff/designs/nuts-4.jpg', label: 'キャラクターチップ' },
+          { url: 'images/staff/designs/nuts-5.jpg', label: 'キャラクターチップ' },
+          { url: 'images/staff/designs/nuts-6.jpg', label: 'キャラクターチップ' }
+        ]
       }
     ]
   },
   menu: {
     visible: true,
+    nomination: {
+      title: '指名料',
+      note: '指名なしの場合は、空きスタッフが対応いたします。',
+      items: [
+        { name: 'なぎさ', desc: '店長 / Nail Artist', price: '¥1,000' },
+        { name: 'くれか', desc: 'Nail Artist', price: '¥1,000' },
+        { name: 'Nuts（ナツ）', desc: 'ネイルチップのオーダー指名', price: '¥500' }
+      ]
+    },
     note: '※ 価格はすべて税込です。デザインの内容・本数により料金が異なります。\n※ 詳しい料金はホットペッパービューティーまたは公式LINEにてご確認ください。',
     categories: [
       {
@@ -158,8 +198,9 @@ function loadContent() {
         if (parsed._v < 2) {
           merged.concept.features = JSON.parse(JSON.stringify(DEFAULT_CONTENT.concept.features));
         }
-        if (!parsed._v || parsed._v < 5) {
+        if (!parsed._v || parsed._v < 6) {
           merged.staff.members = JSON.parse(JSON.stringify(DEFAULT_CONTENT.staff.members));
+          merged.menu.nomination = JSON.parse(JSON.stringify(DEFAULT_CONTENT.menu.nomination));
         }
         merged._v = CONTENT_VERSION;
       }

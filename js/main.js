@@ -163,6 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const smName     = document.getElementById('sm-name');
   const smRole     = document.getElementById('sm-role');
   const smDesc     = document.getElementById('sm-desc');
+  const smFee      = document.getElementById('sm-fee');
+  const smMore     = document.getElementById('sm-more');
   const smGrid     = document.getElementById('sm-grid');
   const smEmpty    = document.getElementById('sm-empty');
 
@@ -176,7 +178,12 @@ document.addEventListener('DOMContentLoaded', () => {
       ? `<img src="${escAttr(member.photoUrl)}" alt="${escAttr(member.name)}">`
       : '<div class="staff-photo-placeholder">PHOTO</div>';
     smName.textContent = member.name;
-    smRole.textContent = member.role;
+    smRole.textContent = member.role || '';
+    smRole.style.display = member.role ? '' : 'none';
+    if (smFee) {
+      smFee.textContent = member.fee || '';
+      smFee.style.display = member.fee ? '' : 'none';
+    }
     smDesc.textContent = member.desc;
 
     const designs = (member.designs || []).filter(d => d.url);
@@ -185,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ).join('');
     smEmpty.style.display = designs.length ? 'none' : '';
     smGrid.style.display  = designs.length ? ''     : 'none';
+    if (smMore) smMore.style.display = designs.length ? '' : 'none';
 
     smGrid.querySelectorAll('.staff-modal-grid-item img').forEach((img, idx) => {
       img.addEventListener('click', () => {

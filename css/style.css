@@ -2359,3 +2359,132 @@ body {
     padding: 2.8rem 1.4rem;
   }
 }
+
+/* ==========================================================
+   指名料 & スタッフ拡充（2026-08-19）
+   ========================================================== */
+
+/* ---- スタッフカードの指名料バッジ ---- */
+.staff-fee {
+  display: inline-block;
+  margin: 0 auto 0.9rem;
+  padding: 0.25rem 0.9rem;
+  border: 1px solid var(--gold-accent);
+  border-radius: 30px;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--gold-accent);
+  white-space: nowrap;
+}
+
+/* 肩書きが無い場合、名前と指名料の間を詰める */
+.staff-name + .staff-fee {
+  margin-top: 0.5rem;
+}
+
+/* ---- メニュー: 指名料パネル ---- */
+.menu-nomination {
+  max-width: 700px;
+  margin: 3rem auto 0;
+  padding: 2rem 2.2rem 1.8rem;
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-top: 2px solid var(--gold-accent);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(90, 155, 181, 0.07);
+}
+
+.nomination-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dark);
+  text-align: center;
+  margin-bottom: 1.3rem;
+}
+
+.nomination-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px dashed var(--border-light);
+}
+
+.nomination-item:last-child {
+  border-bottom: none;
+}
+
+.nomination-item-name {
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  color: var(--text-dark);
+}
+
+.nomination-item-desc {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  margin-top: 0.2rem;
+}
+
+.nomination-item-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--gold-accent);
+  white-space: nowrap;
+}
+
+.nomination-note {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+  font-size: 0.75rem;
+  line-height: 1.9;
+  color: var(--text-medium);
+  text-align: center;
+}
+
+/* ---- スタッフモーダル: 指名料 & Instagram導線 ---- */
+.staff-modal-fee {
+  display: inline-block;
+  margin: 0.5rem 0 0.9rem;
+  padding: 0.25rem 0.9rem;
+  border: 1px solid var(--gold-accent);
+  border-radius: 30px;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--gold-accent);
+  white-space: nowrap;
+}
+
+.staff-modal-more {
+  display: block;
+  margin: 1.8rem auto 0;
+  padding: 0.85rem 2rem;
+  max-width: 320px;
+  text-align: center;
+  border: 1px solid var(--gold-accent);
+  border-radius: 40px;
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  color: var(--gold-accent);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.staff-modal-more:hover {
+  background: var(--gold-accent);
+  color: var(--white);
+  box-shadow: 0 8px 24px rgba(201, 169, 110, 0.32);
+}
+
+@media (max-width: 768px) {
+  .menu-nomination {
+    padding: 1.6rem 1.3rem 1.4rem;
+    margin-top: 2.4rem;
+  }
+  .nomination-item-price {
+    font-size: 1.05rem;
+  }
+}
