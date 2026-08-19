@@ -1,8 +1,8 @@
 const STORAGE_KEY = 'noel_site_content';
-const CONTENT_VERSION = 8;
+const CONTENT_VERSION = 9;
 
 const DEFAULT_CONTENT = {
-  _v: 8,
+  _v: 9,
   hero: {
     subtitleTop: 'YOKOHAMA NAIL SALON',
     title: 'Noël',
@@ -54,12 +54,12 @@ const DEFAULT_CONTENT = {
         desc: 'ネイリスト歴10年のオーナー店長。お客様の「推し」への想いを丁寧にヒアリングし、細部まで妥協しない痛ネイル・キャラクターネイルに仕上げます。パラジェル・フィルイン施術にも対応し、爪の健康も大切にした施術を心がけています。',
         photoUrl: 'images/staff/nagisa.jpg',
         designs: [
-          { url: 'images/staff/designs/nagisa-1.jpg', label: 'ニュアンスアート' },
-          { url: 'images/staff/designs/nagisa-2.jpg', label: '3Dアート' },
-          { url: 'images/staff/designs/nagisa-3.jpg', label: 'オーダーチップ' },
-          { url: 'images/staff/designs/nagisa-4.jpg', label: '痛ネイル' },
-          { url: 'images/staff/designs/nagisa-5.jpg', label: 'キャラクター1本' },
-          { url: 'images/staff/designs/nagisa-6.jpg', label: 'キャラクターネイル' }
+          { url: 'images/staff/designs/nagisa-1.jpg', label: '痛ネイルチップ' },
+          { url: 'images/staff/designs/nagisa-2.jpg', label: 'オーロラニュアンス' },
+          { url: 'images/staff/designs/nagisa-3.jpg', label: 'キャラクターチップ' },
+          { url: 'images/staff/designs/nagisa-4.jpg', label: '3Dアート' },
+          { url: 'images/staff/designs/nagisa-5.jpg', label: '痛ネイル' },
+          { url: 'images/staff/designs/nagisa-6.jpg', label: 'キャラクターチップ' }
         ]
       },
       {
@@ -198,7 +198,7 @@ function loadContent() {
         if (parsed._v < 2) {
           merged.concept.features = JSON.parse(JSON.stringify(DEFAULT_CONTENT.concept.features));
         }
-        if (!parsed._v || parsed._v < 8) {
+        if (!parsed._v || parsed._v < 9) {
           merged.staff.members = JSON.parse(JSON.stringify(DEFAULT_CONTENT.staff.members));
           merged.menu.nomination = JSON.parse(JSON.stringify(DEFAULT_CONTENT.menu.nomination));
         }
