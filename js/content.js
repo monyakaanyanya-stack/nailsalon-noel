@@ -1,8 +1,8 @@
 const STORAGE_KEY = 'noel_site_content';
-const CONTENT_VERSION = 12;
+const CONTENT_VERSION = 13;
 
 const DEFAULT_CONTENT = {
-  _v: 12,
+  _v: 13,
   hero: {
     subtitleTop: 'YOKOHAMA NAIL SALON',
     title: 'Noël',
@@ -56,9 +56,9 @@ const DEFAULT_CONTENT = {
         designs: [
           { url: 'images/staff/designs/nagisa-1.jpg', label: '痛ネイルチップ' },
           { url: 'images/staff/designs/nagisa-2.jpg', label: 'オーロラニュアンス' },
-          { url: 'images/staff/designs/nagisa-3.jpg', label: 'キャラクターチップ' },
+          { url: 'images/staff/designs/nagisa-3.jpg', label: '3Dアート' },
           { url: 'images/staff/designs/nagisa-4.jpg', label: 'キャラクターチップ' },
-          { url: 'images/staff/designs/nagisa-5.jpg', label: '3Dアート' },
+          { url: 'images/staff/designs/nagisa-5.jpg', label: 'キャラクターチップ' },
           { url: 'images/staff/designs/nagisa-6.jpg', label: '痛ネイル' }
         ]
       },
@@ -86,10 +86,10 @@ const DEFAULT_CONTENT = {
         designs: [
           { url: 'images/staff/designs/nuts-1.jpg', label: 'キャラクターチップ' },
           { url: 'images/staff/designs/nuts-2.jpg', label: 'キャラクター×3D' },
-          { url: 'images/staff/designs/nuts-3.jpg', label: '痛ネイルチップ' },
+          { url: 'images/staff/designs/nuts-3.jpg', label: 'キャラクターチップ' },
           { url: 'images/staff/designs/nuts-4.jpg', label: 'キャラクターチップ' },
           { url: 'images/staff/designs/nuts-5.jpg', label: 'キャラクターチップ' },
-          { url: 'images/staff/designs/nuts-6.jpg', label: '痛ネイルチップ' }
+          { url: 'images/staff/designs/nuts-6.jpg', label: 'キャラクターチップ' }
         ]
       }
     ]
@@ -187,6 +187,14 @@ const DEFAULT_CONTENT = {
   }
 };
 
+// 画像URLにバージョンを付与してキャッシュを更新させる。
+// 同じファイル名のまま中身を差し替えても、ブラウザが確実に読み直す。
+function assetUrl(url) {
+  if (!url) return url;
+  if (/^(https?:)?\/\//.test(url) || url.indexOf('data:') === 0) return url;
+  return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'v=' + CONTENT_VERSION;
+}
+
 function loadContent() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -198,7 +206,7 @@ function loadContent() {
         if (parsed._v < 2) {
           merged.concept.features = JSON.parse(JSON.stringify(DEFAULT_CONTENT.concept.features));
         }
-        if (!parsed._v || parsed._v < 12) {
+        if (!parsed._v || parsed._v < 13) {
           merged.staff.members = JSON.parse(JSON.stringify(DEFAULT_CONTENT.staff.members));
           merged.menu.nomination = JSON.parse(JSON.stringify(DEFAULT_CONTENT.menu.nomination));
         }

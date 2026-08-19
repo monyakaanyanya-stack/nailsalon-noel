@@ -32,7 +32,7 @@ function renderConcept(c) {
 
   const img = document.querySelector('.about-image');
   if (img && c.imageUrl) {
-    img.innerHTML = `<img src="${escapeAttr(c.imageUrl)}" alt="サロン写真">`;
+    img.innerHTML = `<img src="${escapeAttr(assetUrl(c.imageUrl))}" alt="サロン写真">`;
   }
 
   const featuresEl = document.querySelector('.about-features');
@@ -89,7 +89,7 @@ function renderStaff(s) {
     <div class="staff-card fade-in" data-member-index="${i}">
       <div class="staff-photo">
         ${m.photoUrl
-          ? `<img src="${escapeAttr(m.photoUrl)}" alt="${escapeAttr(m.name)}">`
+          ? `<img src="${escapeAttr(assetUrl(m.photoUrl))}" alt="${escapeAttr(m.name)}">`
           : '<div class="staff-photo-placeholder">PHOTO</div>'}
       </div>
       <h3 class="staff-name">${escapeHtml(m.name)}</h3>
@@ -178,7 +178,7 @@ function renderGallery(g) {
   if (cta) cta.classList.remove('gallery-instagram-feature');
   grid.innerHTML = images.map(img => `
     <div class="gallery-item">
-      <img src="${escapeAttr(img.url)}" alt="${escapeAttr(img.label)}">
+      <img src="${escapeAttr(assetUrl(img.url))}" alt="${escapeAttr(img.label)}">
     </div>
   `).join('');
 }
@@ -199,7 +199,7 @@ function renderInterior(int) {
   grid.dataset.count = Math.min(images.length, 5);
   grid.innerHTML = images.map((img, i) => `
     <div class="interior-item">
-      <img src="${escapeAttr(img.url)}" alt="${escapeAttr(img.label)}">
+      <img src="${escapeAttr(assetUrl(img.url))}" alt="${escapeAttr(img.label)}">
       ${i === 0 ? `<div class="interior-caption">${escapeHtml(img.label)}</div>` : ''}
     </div>
   `).join('');

@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function openStaffModal(member) {
     if (!staffModal) return;
     smPhoto.innerHTML = member.photoUrl
-      ? `<img src="${escAttr(member.photoUrl)}" alt="${escAttr(member.name)}">`
+      ? `<img src="${escAttr(assetUrl(member.photoUrl))}" alt="${escAttr(member.name)}">`
       : '<div class="staff-photo-placeholder">PHOTO</div>';
     smName.textContent = member.name;
     smRole.textContent = member.role || '';
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const designs = (member.designs || []).filter(d => d.url);
     smGrid.innerHTML = designs.map(d =>
-      `<div class="staff-modal-grid-item"><img src="${escAttr(d.url)}" alt="${escAttr(d.label || '')}"></div>`
+      `<div class="staff-modal-grid-item"><img src="${escAttr(assetUrl(d.url))}" alt="${escAttr(d.label || '')}"></div>`
     ).join('');
     smEmpty.style.display = designs.length ? 'none' : '';
     smGrid.style.display  = designs.length ? ''     : 'none';
