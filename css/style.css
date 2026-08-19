@@ -2488,3 +2488,24 @@ body {
     font-size: 1.05rem;
   }
 }
+
+/* ==========================================================
+   日本語テキストの折り返し改善（2026-08-19）
+   末尾に「す。」など1〜2文字だけ落ちる（孤立行）のを防ぐ。
+   ・auto-phrase … 文節単位で折り返す（日本語向け・Chrome系）
+   ・pretty       … 最終行が極端に短くならないよう調整
+   いずれも非対応ブラウザでは従来どおり折り返すだけで害はない。
+   ========================================================== */
+.staff-desc,
+.staff-modal-desc,
+.about-text p,
+.pick-card-desc,
+.review-text,
+.faq-answer-inner,
+.menu-item-desc,
+.nomination-note,
+.hero-subtitle,
+.contact p {
+  word-break: auto-phrase;
+  text-wrap: pretty;
+}
