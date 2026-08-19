@@ -1,8 +1,8 @@
 const STORAGE_KEY = 'noel_site_content';
-const CONTENT_VERSION = 6;
+const CONTENT_VERSION = 7;
 
 const DEFAULT_CONTENT = {
-  _v: 6,
+  _v: 7,
   hero: {
     subtitleTop: 'YOKOHAMA NAIL SALON',
     title: 'Noël',
@@ -78,7 +78,7 @@ const DEFAULT_CONTENT = {
         ]
       },
       {
-        name: 'Nuts（ナツ）',
+        name: 'NATU',
         role: '',
         fee: '指名料 ¥500（オーダー指名）',
         desc: 'アニメ・ゲームのキャラクターを繊細に描き込んだオーダーチップを制作します。ご自宅で好きなときに楽しめる、あなただけの推しチップをお届けします。※店舗での施術は行っておらず、ネイルチップのオーダーのみの受付となります。',
@@ -102,7 +102,7 @@ const DEFAULT_CONTENT = {
       items: [
         { name: 'なぎさ', desc: '店長 / Nail Artist', price: '¥1,000' },
         { name: 'くれか', desc: 'Nail Artist', price: '¥1,000' },
-        { name: 'Nuts（ナツ）', desc: 'ネイルチップのオーダー指名', price: '¥500' }
+        { name: 'NATU', desc: 'ネイルチップのオーダー指名', price: '¥500' }
       ]
     },
     note: '※ 価格はすべて税込です。デザインの内容・本数により料金が異なります。\n※ 詳しい料金はホットペッパービューティーまたは公式LINEにてご確認ください。',
@@ -198,7 +198,7 @@ function loadContent() {
         if (parsed._v < 2) {
           merged.concept.features = JSON.parse(JSON.stringify(DEFAULT_CONTENT.concept.features));
         }
-        if (!parsed._v || parsed._v < 6) {
+        if (!parsed._v || parsed._v < 7) {
           merged.staff.members = JSON.parse(JSON.stringify(DEFAULT_CONTENT.staff.members));
           merged.menu.nomination = JSON.parse(JSON.stringify(DEFAULT_CONTENT.menu.nomination));
         }
