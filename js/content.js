@@ -1,8 +1,8 @@
 const STORAGE_KEY = 'noel_site_content';
-const CONTENT_VERSION = 7;
+const CONTENT_VERSION = 8;
 
 const DEFAULT_CONTENT = {
-  _v: 7,
+  _v: 8,
   hero: {
     subtitleTop: 'YOKOHAMA NAIL SALON',
     title: 'Noël',
@@ -79,7 +79,7 @@ const DEFAULT_CONTENT = {
       },
       {
         name: 'NATU',
-        role: '',
+        role: 'Nail Artist',
         fee: '指名料 ¥500（オーダー指名）',
         desc: 'アニメ・ゲームのキャラクターを繊細に描き込んだオーダーチップを制作します。ご自宅で好きなときに楽しめる、あなただけの推しチップをお届けします。※店舗での施術は行っておらず、ネイルチップのオーダーのみの受付となります。',
         photoUrl: 'images/staff/nuts.jpg',
@@ -198,7 +198,7 @@ function loadContent() {
         if (parsed._v < 2) {
           merged.concept.features = JSON.parse(JSON.stringify(DEFAULT_CONTENT.concept.features));
         }
-        if (!parsed._v || parsed._v < 7) {
+        if (!parsed._v || parsed._v < 8) {
           merged.staff.members = JSON.parse(JSON.stringify(DEFAULT_CONTENT.staff.members));
           merged.menu.nomination = JSON.parse(JSON.stringify(DEFAULT_CONTENT.menu.nomination));
         }
