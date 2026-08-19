@@ -1,8 +1,8 @@
 const STORAGE_KEY = 'noel_site_content';
-const CONTENT_VERSION = 10;
+const CONTENT_VERSION = 11;
 
 const DEFAULT_CONTENT = {
-  _v: 10,
+  _v: 11,
   hero: {
     subtitleTop: 'YOKOHAMA NAIL SALON',
     title: 'Noël',
@@ -85,11 +85,11 @@ const DEFAULT_CONTENT = {
         photoUrl: 'images/staff/nuts.jpg',
         designs: [
           { url: 'images/staff/designs/nuts-1.jpg', label: 'キャラクターチップ' },
-          { url: 'images/staff/designs/nuts-2.jpg', label: 'キャラクターチップ' },
-          { url: 'images/staff/designs/nuts-3.jpg', label: 'キャラクター×3D' },
+          { url: 'images/staff/designs/nuts-2.jpg', label: 'キャラクター×3D' },
+          { url: 'images/staff/designs/nuts-3.jpg', label: '痛ネイルチップ' },
           { url: 'images/staff/designs/nuts-4.jpg', label: 'キャラクターチップ' },
           { url: 'images/staff/designs/nuts-5.jpg', label: 'キャラクターチップ' },
-          { url: 'images/staff/designs/nuts-6.jpg', label: 'キャラクターチップ' }
+          { url: 'images/staff/designs/nuts-6.jpg', label: '痛ネイルチップ' }
         ]
       }
     ]
@@ -198,7 +198,7 @@ function loadContent() {
         if (parsed._v < 2) {
           merged.concept.features = JSON.parse(JSON.stringify(DEFAULT_CONTENT.concept.features));
         }
-        if (!parsed._v || parsed._v < 10) {
+        if (!parsed._v || parsed._v < 11) {
           merged.staff.members = JSON.parse(JSON.stringify(DEFAULT_CONTENT.staff.members));
           merged.menu.nomination = JSON.parse(JSON.stringify(DEFAULT_CONTENT.menu.nomination));
         }
