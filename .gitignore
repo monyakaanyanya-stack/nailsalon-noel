@@ -1,3 +1,6 @@
 .DS_Store
 Thumbs.db
 node_modules/
+
+# 内部ツールは public 側に置かない（private リポジトリで管理する）
+payroll-app/
