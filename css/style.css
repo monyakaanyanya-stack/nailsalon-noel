@@ -2509,3 +2509,67 @@ body {
   word-break: auto-phrase;
   text-wrap: pretty;
 }
+
+/* ==========================================================
+   スタッフ配置：店長を上段に単独、下段に3名を横並び
+   ========================================================== */
+.staff-grid {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1000px;
+}
+
+/* 1人目（店長）は行いっぱいを取り、中央に置く */
+.staff-card:first-child {
+  grid-column: 1 / -1;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 2.6rem;
+}
+
+/* 店長カードは少し大きく見せる */
+.staff-card:first-child .staff-photo {
+  width: 190px;
+  height: 190px;
+}
+.staff-card:first-child .staff-name {
+  font-size: 1.5rem;
+}
+
+/* 上段と下段の間に余白と区切り */
+.staff-card:first-child::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--gold-accent);
+  margin: 2.2rem auto -0.6rem;
+  opacity: 0.5;
+}
+
+/* 指名料が未設定のスタッフ（Coming Soon）は少し控えめに */
+.staff-card .staff-desc:only-of-type {
+  min-height: auto;
+}
+
+@media (max-width: 900px) {
+  .staff-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 640px;
+  }
+}
+
+@media (max-width: 768px) {
+  .staff-grid {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+  }
+  .staff-card:first-child {
+    max-width: none;
+    padding-bottom: 2.4rem;
+  }
+  .staff-card:first-child .staff-photo {
+    width: 170px;
+    height: 170px;
+  }
+}

@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return (str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  function openStaffModal(member) {
+  function openStaffModal(member, salonInstagram, useIndividual) {
     if (!staffModal) return;
     smPhoto.innerHTML = member.photoUrl
       ? `<img src="${escAttr(assetUrl(member.photoUrl))}" alt="${escAttr(member.name)}">`
@@ -192,7 +192,17 @@ document.addEventListener('DOMContentLoaded', () => {
     ).join('');
     smEmpty.style.display = designs.length ? 'none' : '';
     smGrid.style.display  = designs.length ? ''     : 'none';
-    if (smMore) smMore.style.display = designs.length ? '' : 'none';
+    if (smMore) {
+      // 個人アカウントがあればそちらへ。無ければお店のアカウントへ。
+      // フラグが有効なときだけ個人アカウントを使う
+      const igUrl = (useIndividual && member.instagramUrl) || salonInstagram || '';
+      const handle = igUrl ? igUrl.replace(/\/+$/, '').split('/').pop() : '';
+      smMore.href = igUrl || '#';
+      smMore.textContent = handle
+        ? `@${handle} の投稿を見る →`
+        : 'Instagramでもっと見る →';
+      smMore.style.display = (designs.length && igUrl) ? '' : 'none';
+    }
 
     smGrid.querySelectorAll('.staff-modal-grid-item img').forEach((img, idx) => {
       img.addEventListener('click', () => {
@@ -228,6 +238,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isNaN(idx)) return;
     const content = loadContent();
     const member  = content.staff.members[idx];
-    if (member) openStaffModal(member);
+    if (member) openStaffModal(
+      member,
+      content.contact && content.contact.instagramUrl,
+      content.staff && content.staff.useIndividualInstagram
+    );
   });
 });

@@ -96,9 +96,9 @@ function renderStaff(s) {
       ${m.role ? `<p class="staff-role">${escapeHtml(m.role)}</p>` : ''}
       ${m.fee ? `<p class="staff-fee">${escapeHtml(m.fee)}</p>` : ''}
       <p class="staff-desc">${escapeHtml(m.desc)}</p>
-      <p class="staff-designs-btn">
-        作品を見る${designCount > 0 ? ` <span class="staff-designs-count">(${designCount}枚)</span>` : ''}
-      </p>
+      ${designCount > 0 ? `<p class="staff-designs-btn">
+        作品を見る <span class="staff-designs-count">(${designCount}枚)</span>
+      </p>` : ''}
     </div>
   `}).join('');
 }

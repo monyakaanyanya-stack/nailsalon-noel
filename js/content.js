@@ -1,8 +1,8 @@
 const STORAGE_KEY = 'noel_site_content';
-const CONTENT_VERSION = 14;
+const CONTENT_VERSION = 17;
 
 const DEFAULT_CONTENT = {
-  _v: 14,
+  _v: 17,
   hero: {
     subtitleTop: 'YOKOHAMA NAIL SALON',
     title: 'Noël',
@@ -46,12 +46,17 @@ const DEFAULT_CONTENT = {
   },
   staff: {
     visible: true,
+    // ▼ 個人Instagramへの導線スイッチ
+    //   false … 全員「お店のアカウント」へ飛ぶ（各自の投稿が溜まるまではこちら）
+    //   true  … 各メンバーの instagramUrl へ飛ぶ（未設定の人はお店へ自動フォールバック）
+    useIndividualInstagram: false,
     members: [
       {
         name: 'なぎさ',
         role: '店長 / Nail Artist',
         fee: '指名料 ¥1,000',
         desc: 'ネイリスト歴10年のオーナー店長。お客様の「推し」への想いを丁寧にヒアリングし、細部まで妥協しない痛ネイル・キャラクターネイルに仕上げます。パラジェル・フィルイン施術にも対応し、爪の健康も大切にした施術を心がけています。',
+        instagramUrl: 'https://www.instagram.com/noel.nagisa',
         photoUrl: 'images/staff/nagisa.jpg',
         designs: [
           { url: 'images/staff/designs/nagisa-1.jpg', label: '痛ネイルチップ' },
@@ -67,6 +72,7 @@ const DEFAULT_CONTENT = {
         role: 'Nail Artist',
         fee: '指名料 ¥1,000',
         desc: 'ネイリスト歴6年。3Dネイルを得意とし、立体感あふれるアートで推しをより生き生きと表現します。繊細なパーツワークや複雑なデザインもお任せください。',
+        instagramUrl: 'https://www.instagram.com/noel.kureka',
         photoUrl: 'images/staff/kureka.jpg',
         designs: [
           { url: 'images/staff/designs/kureka-1.jpg', label: '3Dフラワー' },
@@ -78,10 +84,20 @@ const DEFAULT_CONTENT = {
         ]
       },
       {
+        name: 'Coming Soon',
+        role: 'Nail Artist',
+        fee: '',
+        desc: '新しいスタッフが加わります。詳しいご紹介は決まり次第お知らせいたします。',
+        instagramUrl: '',
+        photoUrl: '',
+        designs: []
+      },
+      {
         name: 'NATU',
         role: 'Nail Artist',
         fee: '指名料 ¥500（オーダー指名）',
         desc: 'アニメ・ゲームのキャラクターを繊細に描き込んだオーダーチップを制作します。ご自宅で好きなときに楽しめる、あなただけの推しチップをお届けします。※店舗での施術は行っておらず、ネイルチップのオーダーのみの受付となります。',
+        instagramUrl: '',
         photoUrl: 'images/staff/nuts.jpg',
         designs: [
           { url: 'images/staff/designs/nuts-1.jpg', label: 'キャラクターチップ' },
@@ -206,7 +222,7 @@ function loadContent() {
         if (parsed._v < 2) {
           merged.concept.features = JSON.parse(JSON.stringify(DEFAULT_CONTENT.concept.features));
         }
-        if (!parsed._v || parsed._v < 14) {
+        if (!parsed._v || parsed._v < 17) {
           merged.staff.members = JSON.parse(JSON.stringify(DEFAULT_CONTENT.staff.members));
           merged.menu.nomination = JSON.parse(JSON.stringify(DEFAULT_CONTENT.menu.nomination));
         }
